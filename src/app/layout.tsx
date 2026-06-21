@@ -8,6 +8,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+    metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
     title: "Interactive Zero-Knowledge Proves Academy",
     description: "Learn ZK from 0 to 100",
     keywords: ["Zero-Knowledge", "ZK", "Proves"],
