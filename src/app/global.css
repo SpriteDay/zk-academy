@@ -127,8 +127,8 @@
 }
 
 .dark {
-    --tint-hue: 245;
-    --tint-chroma: 0.008;
+    --tint-hue: 180;
+    --tint-chroma: 0.005;
 
     /* fumadocs palette — dark mode (tinted) */
     --fd-bg: oklch(18.2% var(--tint-chroma) var(--tint-hue));
