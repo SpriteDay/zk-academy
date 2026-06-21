@@ -18,7 +18,7 @@ export function baseOptions(): BaseLayoutProps {
                         src="/Logo.webp"
                         width={32}
                         height={32}
-                        className="mix-blend-screen"
+                        className="rounded-sm dark:mix-blend-screen"
                     />
                     <span className="text-[1rem] font-medium tracking-tight">
                         ZK Academy
