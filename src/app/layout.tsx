@@ -8,14 +8,12 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-    title: "Interactive Markets Encyclopedia",
-    description:
-        "Learn how markets work with interactive examples for free. Done by Sprite",
-    keywords: ["Solana", "SOL"],
+    title: "Interactive Zero-Knowledge Proves Academy",
+    description: "Learn ZK from 0 to 100",
+    keywords: ["Zero-Knowledge", "ZK", "Proves"],
     openGraph: {
-        title: "Interactive Markets Encyclopedia",
-        description:
-            "Learn how markets work with interactive examples for free. Done by Sprite",
+        title: "Interactive Zero-Knowledge Proves Academy",
+        description: "Learn ZK from 0 to 100",
         images: [
             {
                 url: "/og-image.jpg",
@@ -26,9 +24,8 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Interactive Markets Encyclopedia",
-        description:
-            "Learn how markets work with interactive examples for free. Done by Sprite",
+        title: "Interactive Zero-Knowledge Proves Academy",
+        description: "Learn ZK from 0 to 100",
         images: ["/twitter-image.jpg"],
     },
     other: {
