@@ -81,8 +81,8 @@
 }
 
 :root {
-    --tint-hue: 53.43;
-    --tint-chroma: 0.007;
+    --tint-hue: 245;
+    --tint-chroma: 0.04;
     --radius: 0.625rem;
 
     /* fumadocs palette — light mode (tinted) */
@@ -115,34 +115,38 @@
     --sidebar: oklch(83.28% var(--tint-chroma) var(--tint-hue));
     --sidebar-foreground: oklch(30% var(--tint-chroma) var(--tint-hue));
     --sidebar-primary: oklch(25.65% var(--tint-chroma) var(--tint-hue));
-    --sidebar-primary-foreground: oklch(84.5% var(--tint-chroma) var(--tint-hue));
+    --sidebar-primary-foreground: oklch(
+        84.5% var(--tint-chroma) var(--tint-hue)
+    );
     --sidebar-accent: oklch(0.12 0 0 / 0.06);
-    --sidebar-accent-foreground: oklch(25.65% var(--tint-chroma) var(--tint-hue));
+    --sidebar-accent-foreground: oklch(
+        25.65% var(--tint-chroma) var(--tint-hue)
+    );
     --sidebar-border: oklch(76.68% var(--tint-chroma) var(--tint-hue));
     --sidebar-ring: oklch(49.98% var(--tint-chroma) var(--tint-hue));
 }
 
 .dark {
-    --tint-hue: 103.5;
-    --tint-chroma: 0.02;
+    --tint-hue: 245;
+    --tint-chroma: 0.008;
 
-    /* fumadocs palette — dark mode (foregrounds tinted, backgrounds neutral) */
-    --fd-bg: oklch(18.2% 0 0);
+    /* fumadocs palette — dark mode (tinted) */
+    --fd-bg: oklch(18.2% var(--tint-chroma) var(--tint-hue));
     --fd-fg: oklch(86.4% var(--tint-chroma) var(--tint-hue));
-    --fd-muted: oklch(24.7% 0 0);
+    --fd-muted: oklch(24.7% var(--tint-chroma) var(--tint-hue));
     --fd-muted-fg: oklch(71.6% var(--tint-chroma) var(--tint-hue));
-    --fd-popover: oklch(23.3% 0 0);
+    --fd-popover: oklch(23.3% var(--tint-chroma) var(--tint-hue));
     --fd-popover-fg: oklch(82.3% var(--tint-chroma) var(--tint-hue));
-    --fd-card: oklch(21.3% 0 0);
+    --fd-card: oklch(21.3% var(--tint-chroma) var(--tint-hue));
     --fd-card-fg: oklch(89.5% var(--tint-chroma) var(--tint-hue));
-    --fd-border: oklch(51.0% 0 0 / 20%);
+    --fd-border: oklch(51.0% var(--tint-chroma) var(--tint-hue) / 20%);
     --fd-primary: oklch(98.5% var(--tint-chroma) var(--tint-hue));
-    --fd-primary-fg: oklch(20.4% 0 0);
-    --fd-secondary: oklch(24.7% 0 0);
+    --fd-primary-fg: oklch(20.4% var(--tint-chroma) var(--tint-hue));
+    --fd-secondary: oklch(24.7% var(--tint-chroma) var(--tint-hue));
     --fd-secondary-fg: oklch(86.3% var(--tint-chroma) var(--tint-hue));
-    --fd-accent: oklch(51.8% 0 0 / 30%);
+    --fd-accent: oklch(51.8% var(--tint-chroma) var(--tint-hue) / 30%);
     --fd-accent-fg: oklch(84.5% var(--tint-chroma) var(--tint-hue));
-    --fd-ring: oklch(64.0% 0 0);
+    --fd-ring: oklch(64.0% var(--tint-chroma) var(--tint-hue));
     --fd-overlay: oklch(0% 0 0 / 20%);
 
     /* shadcn specific — dark mode */
@@ -153,20 +157,22 @@
     --chart-3: oklch(0.439 0 0);
     --chart-4: oklch(0.371 0 0);
     --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar: oklch(20.5% var(--tint-chroma) var(--tint-hue));
+    --sidebar-foreground: oklch(98.5% var(--tint-chroma) var(--tint-hue));
     --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --sidebar-primary-foreground: oklch(
+        98.5% var(--tint-chroma) var(--tint-hue)
+    );
+    --sidebar-accent: oklch(26.9% var(--tint-chroma) var(--tint-hue));
+    --sidebar-accent-foreground: oklch(98.5% var(--tint-chroma) var(--tint-hue));
+    --sidebar-border: oklch(100% var(--tint-chroma) var(--tint-hue) / 10%);
+    --sidebar-ring: oklch(55.6% var(--tint-chroma) var(--tint-hue));
 }
 
 .dark #nd-sidebar {
-    --fd-muted: oklch(28.0% 0 0);
-    --fd-secondary: oklch(30.1% 0 0);
-    --fd-muted-fg: oklch(78.1% 0 0);
+    --fd-muted: oklch(28.0% var(--tint-chroma) var(--tint-hue));
+    --fd-secondary: oklch(30.1% var(--tint-chroma) var(--tint-hue));
+    --fd-muted-fg: oklch(78.1% var(--tint-chroma) var(--tint-hue));
 }
 
 ::selection {
