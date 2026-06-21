@@ -1,0 +1,25 @@
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared"
+import Image from "next/image"
+
+// fill this with your actual GitHub info, for example:
+export const gitConfig = {
+    user: "SpriteDay",
+    repo: "zk-academy",
+    branch: "main",
+}
+
+export function baseOptions(): BaseLayoutProps {
+    return {
+        nav: {
+            title: (
+                <div className="flex items-center gap-2">
+                    <Image alt="logo" src="/Logo.svg" width={32} height={32} />
+                    <span className="text-[1rem] font-medium tracking-tight">
+                        ZK Academy
+                    </span>
+                </div>
+            ),
+        },
+        githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
+    }
+}

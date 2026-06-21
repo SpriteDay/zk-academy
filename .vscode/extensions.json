@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "biomejs.biome", // Biome plugin for formatting
+        "dbaeumer.vscode-eslint", // ESLint plugin
+        "bradlc.vscode-tailwindcss", // Tailwindcss plugin
+        "unifiedjs.vscode-mdx" // MDX highlighting
+    ]
+}
