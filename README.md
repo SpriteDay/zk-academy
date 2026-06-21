@@ -1,1 +1,5 @@
 # ZK Academy
+
+Hi, my name is [Sprite] (https://t.me/SpriteDay), I am building this academy for exploring and learning Zero-Knowledge Proves concepts. The shape of this resource will be defined as I put more and more chapters as I build my own understanding of ZK proves. I want to explore practical applications as well as theoretical concepts, I will be sharing everything with you here
+
+Link: https://zk.spriteday.com/
