@@ -9,8 +9,28 @@ export interface ModuloClockProps {
     labelEvery?: number
 }
 
+const VIEWBOX_SIZE = 200
+const CENTER_X = VIEWBOX_SIZE / 2
+const CENTER_Y = VIEWBOX_SIZE / 2
+const BEZEL_RADIUS = 93
+const FACE_RADIUS = 88
+const TICK_OUTER_RADIUS = 84
+const TICK_MINOR_INNER_RADIUS = 79.5
+const TICK_MAJOR_INNER_RADIUS = 75.5
+const LABEL_RADIUS = 65
+const HAND_LENGTH = 57
+const HAND_TAIL_LENGTH = 14
+
 function round(n: number) {
     return Math.round(n * 100) / 100
+}
+
+function polar(deg: number, r: number) {
+    const rad = ((deg - 90) * Math.PI) / 180
+    return {
+        x: round(CENTER_X + r * Math.cos(rad)),
+        y: round(CENTER_Y + r * Math.sin(rad)),
+    }
 }
 
 export function ModuloClock({
@@ -49,40 +69,21 @@ export function ModuloClock({
         return 6
     }, [ticks])
 
-    const centerX = 100
-    const centerY = 100
-    const bezelRadius = 93
-    const faceRadius = 88
-    const tickOuterRadius = 84
-    const tickMinorInnerRadius = 79.5
-    const tickMajorInnerRadius = 75.5
-    const labelRadius = 65
-    const handLength = 57
-    const handTailLength = 14
-
-    function polar(deg: number, r: number) {
-        const rad = ((deg - 90) * Math.PI) / 180
-        return {
-            x: round(centerX + r * Math.cos(rad)),
-            y: round(centerY + r * Math.sin(rad)),
-        }
-    }
-
     const handRad = ((handAngle - 90) * Math.PI) / 180
     const handTip = {
-        x: round(centerX + handLength * Math.cos(handRad)),
-        y: round(centerY + handLength * Math.sin(handRad)),
+        x: round(CENTER_X + HAND_LENGTH * Math.cos(handRad)),
+        y: round(CENTER_Y + HAND_LENGTH * Math.sin(handRad)),
     }
     const handTail = {
-        x: round(centerX - handTailLength * Math.cos(handRad)),
-        y: round(centerY - handTailLength * Math.sin(handRad)),
+        x: round(CENTER_X - HAND_TAIL_LENGTH * Math.cos(handRad)),
+        y: round(CENTER_Y - HAND_TAIL_LENGTH * Math.sin(handRad)),
     }
 
     const depthId = `depth-${id}`
 
     return (
         <svg
-            viewBox="0 0 200 200"
+            viewBox={`0 0 ${VIEWBOX_SIZE} ${VIEWBOX_SIZE}`}
             className="mx-auto block w-full max-w-xs"
             role="img"
             aria-label={`Modulo ${base} clock showing ${value} mod ${base} = ${value % base}`}
@@ -96,32 +97,34 @@ export function ModuloClock({
 
             {/* Bezel */}
             <circle
-                cx={centerX}
-                cy={centerY}
-                r={bezelRadius}
+                cx={CENTER_X}
+                cy={CENTER_Y}
+                r={BEZEL_RADIUS}
                 fill="var(--color-fd-border)"
             />
 
             {/* Face */}
             <circle
-                cx={centerX}
-                cy={centerY}
-                r={faceRadius}
+                cx={CENTER_X}
+                cy={CENTER_Y}
+                r={FACE_RADIUS}
                 fill="var(--color-fd-card)"
             />
             <circle
-                cx={centerX}
-                cy={centerY}
-                r={faceRadius}
+                cx={CENTER_X}
+                cy={CENTER_Y}
+                r={FACE_RADIUS}
                 fill={`url(#${depthId})`}
             />
 
             {/* Tick lines */}
             {ticks.map(({ angle, isLabeled }, i) => {
-                const p1 = polar(angle, tickOuterRadius)
+                const p1 = polar(angle, TICK_OUTER_RADIUS)
                 const p2 = polar(
                     angle,
-                    isLabeled ? tickMajorInnerRadius : tickMinorInnerRadius,
+                    isLabeled
+                        ? TICK_MAJOR_INNER_RADIUS
+                        : TICK_MINOR_INNER_RADIUS,
                 )
                 return (
                     <line
@@ -146,8 +149,8 @@ export function ModuloClock({
                 label !== null ? (
                     <text
                         key={`l${i}`}
-                        x={polar(angle, labelRadius).x}
-                        y={polar(angle, labelRadius).y}
+                        x={polar(angle, LABEL_RADIUS).x}
+                        y={polar(angle, LABEL_RADIUS).y}
                         textAnchor="middle"
                         dominantBaseline="central"
                         fill="var(--color-fd-foreground)"
@@ -164,15 +167,15 @@ export function ModuloClock({
             <line
                 x1={handTail.x}
                 y1={handTail.y}
-                x2={centerX}
-                y2={centerY}
+                x2={CENTER_X}
+                y2={CENTER_Y}
                 stroke="var(--color-fd-primary)"
                 strokeWidth="3"
                 strokeLinecap="round"
             />
             <line
-                x1={centerX}
-                y1={centerY}
+                x1={CENTER_X}
+                y1={CENTER_Y}
                 x2={handTip.x}
                 y2={handTip.y}
                 stroke="var(--color-fd-primary)"
@@ -182,14 +185,14 @@ export function ModuloClock({
 
             {/* Center cap */}
             <circle
-                cx={centerX}
-                cy={centerY}
+                cx={CENTER_X}
+                cy={CENTER_Y}
                 r="4"
                 fill="var(--color-fd-primary)"
             />
             <circle
-                cx={centerX}
-                cy={centerY}
+                cx={CENTER_X}
+                cy={CENTER_Y}
                 r="1.5"
                 fill="var(--color-fd-card)"
             />
