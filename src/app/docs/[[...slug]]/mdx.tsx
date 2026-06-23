@@ -1,11 +1,11 @@
 import defaultMdxComponents from "fumadocs-ui/mdx"
 import type { MDXComponents } from "mdx/types"
-import { TestComponent } from "./01-discrete-math/test-component"
+import { HourClock } from "./01-what-remainder-remembers/1-hour-clock"
 
 export function getMDXComponents(components?: MDXComponents) {
     return {
         ...defaultMdxComponents,
-        TestComponent,
+        HourClock,
         ...components,
     } satisfies MDXComponents
 }
