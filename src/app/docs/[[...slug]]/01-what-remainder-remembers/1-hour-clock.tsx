@@ -38,7 +38,6 @@ export function HourClock() {
                 <ModuloClock
                     base={CLOCK_BASE}
                     value={inputValue}
-                    zeroLabel="12"
                 />
             </CardContent>
             <CardFooter className="flex-col items-start gap-4 text-sm">
