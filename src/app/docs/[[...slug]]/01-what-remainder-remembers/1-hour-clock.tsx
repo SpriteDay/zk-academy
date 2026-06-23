@@ -14,7 +14,7 @@ import { useMemo, useState } from "react"
 import { ModuloClock } from "./shared/modulo-clock"
 
 const MIN_VALUE = 0
-const MAX_VALUE = 72
+const MAX_VALUE = 48
 const STEP = 1
 const DEFAULT_VALUE = 12
 const CLOCK_BASE = 12
