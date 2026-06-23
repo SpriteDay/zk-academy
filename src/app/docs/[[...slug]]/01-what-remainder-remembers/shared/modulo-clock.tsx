@@ -169,7 +169,7 @@ export function ModuloClock({
                 y1={handTail.y}
                 x2={CENTER_X}
                 y2={CENTER_Y}
-                stroke="var(--color-fd-primary)"
+                stroke="var(--color-indigo-400)"
                 strokeWidth="3"
                 strokeLinecap="round"
             />
@@ -178,7 +178,7 @@ export function ModuloClock({
                 y1={CENTER_Y}
                 x2={handTip.x}
                 y2={handTip.y}
-                stroke="var(--color-fd-primary)"
+                stroke="var(--color-indigo-400)"
                 strokeWidth="2"
                 strokeLinecap="round"
             />
