@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { useMemo, useState } from "react"
 
 const MIN_VALUE = 0
-const MAX_VALUE = 120
+const MAX_VALUE = 72
 const STEP = 1
 const DEFAULT_VALUE = 12
 const CLOCK_BASE = 12
