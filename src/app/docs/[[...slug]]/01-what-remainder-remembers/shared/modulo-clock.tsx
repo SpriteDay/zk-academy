@@ -49,33 +49,33 @@ export function ModuloClock({
         return 6
     }, [ticks])
 
-    const CX = 100
-    const CY = 100
-    const BEZEL_R = 93
-    const FACE_R = 88
-    const TICK_OUTER = 84
-    const TICK_MINOR = 79.5
-    const TICK_MAJOR = 75.5
-    const LABEL_R = 65
-    const HAND_LEN = 57
-    const TAIL_LEN = 14
+    const centerX = 100
+    const centerY = 100
+    const bezelRadius = 93
+    const faceRadius = 88
+    const tickOuterRadius = 84
+    const tickMinorInnerRadius = 79.5
+    const tickMajorInnerRadius = 75.5
+    const labelRadius = 65
+    const handLength = 57
+    const handTailLength = 14
 
     function polar(deg: number, r: number) {
         const rad = ((deg - 90) * Math.PI) / 180
         return {
-            x: round(CX + r * Math.cos(rad)),
-            y: round(CY + r * Math.sin(rad)),
+            x: round(centerX + r * Math.cos(rad)),
+            y: round(centerY + r * Math.sin(rad)),
         }
     }
 
     const handRad = ((handAngle - 90) * Math.PI) / 180
     const handTip = {
-        x: round(CX + HAND_LEN * Math.cos(handRad)),
-        y: round(CY + HAND_LEN * Math.sin(handRad)),
+        x: round(centerX + handLength * Math.cos(handRad)),
+        y: round(centerY + handLength * Math.sin(handRad)),
     }
     const handTail = {
-        x: round(CX - TAIL_LEN * Math.cos(handRad)),
-        y: round(CY - TAIL_LEN * Math.sin(handRad)),
+        x: round(centerX - handTailLength * Math.cos(handRad)),
+        y: round(centerY - handTailLength * Math.sin(handRad)),
     }
 
     const depthId = `depth-${id}`
@@ -95,16 +95,34 @@ export function ModuloClock({
             </defs>
 
             {/* Bezel */}
-            <circle cx={CX} cy={CY} r={BEZEL_R} fill="var(--color-fd-border)" />
+            <circle
+                cx={centerX}
+                cy={centerY}
+                r={bezelRadius}
+                fill="var(--color-fd-border)"
+            />
 
             {/* Face */}
-            <circle cx={CX} cy={CY} r={FACE_R} fill="var(--color-fd-card)" />
-            <circle cx={CX} cy={CY} r={FACE_R} fill={`url(#${depthId})`} />
+            <circle
+                cx={centerX}
+                cy={centerY}
+                r={faceRadius}
+                fill="var(--color-fd-card)"
+            />
+            <circle
+                cx={centerX}
+                cy={centerY}
+                r={faceRadius}
+                fill={`url(#${depthId})`}
+            />
 
             {/* Tick lines */}
             {ticks.map(({ angle, isLabeled }, i) => {
-                const p1 = polar(angle, TICK_OUTER)
-                const p2 = polar(angle, isLabeled ? TICK_MAJOR : TICK_MINOR)
+                const p1 = polar(angle, tickOuterRadius)
+                const p2 = polar(
+                    angle,
+                    isLabeled ? tickMajorInnerRadius : tickMinorInnerRadius,
+                )
                 return (
                     <line
                         key={`t${i}`}
@@ -128,8 +146,8 @@ export function ModuloClock({
                 label !== null ? (
                     <text
                         key={`l${i}`}
-                        x={polar(angle, LABEL_R).x}
-                        y={polar(angle, LABEL_R).y}
+                        x={polar(angle, labelRadius).x}
+                        y={polar(angle, labelRadius).y}
                         textAnchor="middle"
                         dominantBaseline="central"
                         fill="var(--color-fd-foreground)"
@@ -146,15 +164,15 @@ export function ModuloClock({
             <line
                 x1={handTail.x}
                 y1={handTail.y}
-                x2={CX}
-                y2={CY}
+                x2={centerX}
+                y2={centerY}
                 stroke="var(--color-fd-primary)"
                 strokeWidth="3"
                 strokeLinecap="round"
             />
             <line
-                x1={CX}
-                y1={CY}
+                x1={centerX}
+                y1={centerY}
                 x2={handTip.x}
                 y2={handTip.y}
                 stroke="var(--color-fd-primary)"
@@ -163,8 +181,18 @@ export function ModuloClock({
             />
 
             {/* Center cap */}
-            <circle cx={CX} cy={CY} r="4" fill="var(--color-fd-primary)" />
-            <circle cx={CX} cy={CY} r="1.5" fill="var(--color-fd-card)" />
+            <circle
+                cx={centerX}
+                cy={centerY}
+                r="4"
+                fill="var(--color-fd-primary)"
+            />
+            <circle
+                cx={centerX}
+                cy={centerY}
+                r="1.5"
+                fill="var(--color-fd-card)"
+            />
         </svg>
     )
 }
