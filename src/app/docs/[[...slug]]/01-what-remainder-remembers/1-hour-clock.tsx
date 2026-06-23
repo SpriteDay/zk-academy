@@ -54,9 +54,9 @@ export function HourClock() {
                         />
                     </div>
                     <div className="align-center flex w-full flex-row justify-around gap-1 text-center md:w-1/3 md:flex-col md:justify-between">
-                        <span>
-                            Value on the clock:{" "}
-                            <span className="font-bold tabular-nums">
+                        <span className="flex items-center justify-center gap-1">
+                            Value on the clock:
+                            <span className="block min-w-[2ch] font-bold tabular-nums">
                                 {resultValue}
                             </span>
                         </span>
