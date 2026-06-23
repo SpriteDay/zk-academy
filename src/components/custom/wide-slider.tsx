@@ -47,7 +47,7 @@ export function WideSlider({
                 <SliderPrimitive.Track
                     data-slot="slider-track"
                     className={cn(
-                        "border-border bg-card relative grow overflow-hidden rounded-full border",
+                        "border-border bg-fd-background dark:bg-card relative grow overflow-hidden rounded-full border",
                         "select-none data-horizontal:h-4.5 data-horizontal:w-full",
                         "data-vertical:h-full data-vertical:w-4.5",
                     )}
