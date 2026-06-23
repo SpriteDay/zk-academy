@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useMemo, useState } from "react"
+import { ModuloClock } from "./shared/modulo-clock"
 
 const MIN_VALUE = 0
 const MAX_VALUE = 72
@@ -24,20 +25,27 @@ export function HourClock() {
     const resultValue = useMemo<number>(() => {
         return inputValue % CLOCK_BASE
     }, [inputValue])
+
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Example of modulo with 12 hours clock</CardTitle>
+                <CardTitle>12-hour clock — modulo in action</CardTitle>
                 <CardDescription>
-                    Use slider to count more hours
+                    Drag the slider to add hours and watch where the hand lands
                 </CardDescription>
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent className="flex justify-center py-2">
+                <ModuloClock
+                    base={CLOCK_BASE}
+                    value={inputValue}
+                    zeroLabel="12"
+                />
+            </CardContent>
             <CardFooter className="flex-col items-start gap-4 text-sm">
                 <div className="flex w-full flex-col gap-4 py-2 md:flex-row">
                     <div className="flex w-full flex-col items-center gap-4 md:w-2/3">
                         <Label>
-                            Input value:{" "}
+                            Hours passed:{" "}
                             <span className="font-bold tabular-nums">
                                 {inputValue}
                             </span>
@@ -53,12 +61,15 @@ export function HourClock() {
                             className="mx-auto w-full"
                         />
                     </div>
-                    <div className="align-center flex w-full flex-row justify-around gap-1 text-center md:w-1/3 md:flex-col md:justify-between">
-                        <span className="flex items-center justify-center gap-1">
-                            Value on the clock:
-                            <span className="block min-w-[2ch] font-bold tabular-nums">
-                                {resultValue}
-                            </span>
+                    <div className="flex w-full flex-col items-center justify-center gap-1 text-center md:w-1/3">
+                        <span className="text-muted-foreground text-xs">
+                            {inputValue} mod {CLOCK_BASE}
+                        </span>
+                        <span className="text-2xl font-bold tabular-nums">
+                            {resultValue === 0 ? CLOCK_BASE : resultValue}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                            on the clock
                         </span>
                     </div>
                 </div>
