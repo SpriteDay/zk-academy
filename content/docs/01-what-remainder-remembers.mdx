@@ -3,18 +3,18 @@ title: 01. What Remainder Remembers
 description: Modulo Operation and finite fields
 ---
 
-Modulo is an operation that returns the reminder of a division
+In cryptography we base our computations and protocols on integers. We do this because fundamental pillars of cryptography such as Number Theory and Boolean Logic were built on top of discrete and countable numbers
+
+Working with discrete numbers is not that different then working with rationals or real numbers (3/5 or Pi) - we add, multiple and subtract reals and integers just the same. Difference comes when we try to divide integers - because if you divide 12 / 5 and want to get an integer... well how do you actually do that?
+
+Actually a CPU on your device already does it. It simply calculates integer value out of division and checks what is left - getting a remainder. So 12 / 5 is simply:
 
 ```
-13 / 5 = 2 (and remainer of 3)
+12 / 5 = 2 (and remainder of 2)
 ```
 
-You can see that we are doing some weird things, you can probably think why not just calculate it like
+That's how integer division works in CPUs
 
-```
-13 / 5 = 2.6
-```
-
-And get clean value with decimal fraction?
+So you have 2 operators - modulo and full integer division
 
 <HourClock />
