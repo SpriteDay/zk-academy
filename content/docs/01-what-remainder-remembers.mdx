@@ -7,22 +7,22 @@ In cryptography we base our computations and protocols on **integers**. We do th
 
 <Callout>
   <>
-    Reason for that is actually quite fascinating - despite integers intuitively being just a "subset" of rational numbers - we actually loose properties going from one to another. Crucially we loose [prime factorization](https://en.wikipedia.org/wiki/Prime_number#Unique_factorization) required by Number Theory. We loose it because we can define rational numbers by [infinite different combinations of factors](https://en.wikipedia.org/wiki/Factorization#:~:text=Factorization%20is%20not,is%20not%20zero), while each integer can be defined by a unique combination of primes
+    Reason for that is actually quite fascinating - despite integers intuitively being just a "subset" of rational numbers - we actually loose properties going from integers to rationals. Crucially we loose [prime factorization](https://en.wikipedia.org/wiki/Prime_number#Unique_factorization) required by core of Number Theory. We loose it because we can define rational numbers by [infinite different combinations of factors](https://en.wikipedia.org/wiki/Factorization#:~:text=Factorization%20is%20not,is%20not%20zero), while each integer can be defined by only a unique combination of primes
   </>
 </Callout>
 
-Working with discrete numbers is not that different compared to working with rational numbers (such as `3/5`, `1.16834`). We can add, multiply and subtract rationals and integers just the same. Difference comes when we try to divide integers. If you divide 13 / 5 and want to get an integer... well how do you actually do that?
+Working with discrete numbers is not that different compared to working with rational numbers (such as `3/5` or `1.16834`). We can add, multiply and subtract rationals and integers just the same. Difference comes when we try to divide integers. If you divide 13 / 5 and want to get an integer... well how do you actually do that?
 
-While we speaking your CPU actually did that a bunch of times. It simply calculates integer value out of division and checks what is left - getting a remainder. So 13 / 5 is just:
+While we speaking a CPU on your device actually did that a bunch of times. It simply calculates integer value of division and checks what is left - getting a remainder. So 13 / 5 is just:
 
 ```
 13 / 5 = 2 (and remainder of 3)
 ```
 
-You kind of get two parts produced by a pair of operators - **full integer division** and **modulo** (for getting a remainder)
+You kind of get two parts produced by a pair of operators - **full integer division** and **modulo operator** (for getting a remainder)
 
 You could actually see how exactly modulo works looking at mechanical clocks:
 
 <HourClock />
 
-As hours go by you always get an answer from finite number of integers - an hour number from 1 to 12, though it could pass much more then 12 hours
+As hours go by you always get an answer from finite number of integers. You get an hour number from 1 to 12, though it could pass much more then 12 hours
