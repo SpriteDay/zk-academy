@@ -183,6 +183,11 @@
 }
 
 ::selection {
+    background: #000;
+    color: oklch(84.5% var(--tint-chroma) var(--tint-hue));
+}
+
+.dark ::selection {
     background: oklch(84.5% var(--tint-chroma) var(--tint-hue));
     color: #000;
 }
