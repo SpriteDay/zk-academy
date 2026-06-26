@@ -35,7 +35,11 @@ export function HourClock() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center py-2">
-                <ModuloClock base={CLOCK_BASE} value={inputValue} />
+                <ModuloClock
+                    base={CLOCK_BASE}
+                    value={inputValue}
+                    zeroLabel="12"
+                />
             </CardContent>
             <CardFooter className="flex-col items-start gap-4 text-sm">
                 <div className="flex w-full flex-col gap-4 py-2 md:flex-row">

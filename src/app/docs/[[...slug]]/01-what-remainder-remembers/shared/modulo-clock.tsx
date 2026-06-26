@@ -7,6 +7,7 @@ export interface ModuloClockProps {
     value: number
     tickCount?: number
     labelEvery?: number
+    zeroLabel?: string
 }
 
 const VIEWBOX_SIZE = 200
@@ -38,6 +39,7 @@ export function ModuloClock({
     value,
     tickCount: tickCountProp,
     labelEvery: labelEveryProp,
+    zeroLabel,
 }: ModuloClockProps) {
     const rawId = useId()
     const id = rawId.replace(/:/g, "")
@@ -52,11 +54,13 @@ export function ModuloClock({
             const isLabeled = i % labelEvery === 0
             const tickValue = Math.round((i / tickCount) * base)
             const label = isLabeled
-                ? String(tickValue === 0 ? base : tickValue)
+                ? tickValue === 0 && zeroLabel
+                    ? zeroLabel
+                    : String(tickValue)
                 : null
             return { angle, label, isLabeled }
         })
-    }, [tickCount, base, labelEvery])
+    }, [tickCount, base, labelEvery, zeroLabel])
 
     const labelFontSize = useMemo(() => {
         let maxLen = 1
