@@ -25,4 +25,6 @@ You could actually see how exactly modulo works looking at mechanical clocks:
 
 <HourClock />
 
-As hours go by you always get an answer from a finite number of integers. You get an hour number from 1 to 12, though it could pass much more than 12 hours
+You always get an answer from a finite number of integers, though hours keep going by. You get a number from 1 to 12, though it could pass much more than 12 hours
+
+<Callout>Well - to be clear you get a value from 0 to 11 by doing the actual modulo operation, but you see 12 on the clock when value is cleanly divisible by 12 - that's just how clocks are usually made and it is a bit quirky</Callout>

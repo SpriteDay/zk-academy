@@ -62,7 +62,7 @@ export function HourClock() {
                             {inputValue} mod {CLOCK_BASE}
                         </span>
                         <span className="text-2xl font-bold tabular-nums">
-                            {resultValue === 0 ? CLOCK_BASE : resultValue}
+                            {resultValue}
                         </span>
                         <span className="text-muted-foreground text-xs">
                             on the clock
