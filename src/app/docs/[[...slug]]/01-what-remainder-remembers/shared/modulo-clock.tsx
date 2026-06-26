@@ -163,8 +163,7 @@ export function ModuloClock({
                         cx={polar(angle, LABEL_RADIUS).x}
                         cy={polar(angle, LABEL_RADIUS).y}
                         r={9}
-                        fill="var(--color-emerald-500)"
-                        opacity={0.2}
+                        className="fill-emerald-600/30 dark:fill-emerald-500/20"
                     />
                 ) : null,
             )}
@@ -178,10 +177,11 @@ export function ModuloClock({
                         y={polar(angle, LABEL_RADIUS).y}
                         textAnchor="middle"
                         dominantBaseline="central"
-                        fill={
+                        fill="var(--color-fd-foreground)"
+                        className={
                             highlightedSet.has(tickValue)
-                                ? "var(--color-emerald-400)"
-                                : "var(--color-fd-foreground)"
+                                ? "fill-emerald-700 dark:fill-emerald-400"
+                                : undefined
                         }
                         fontSize={labelFontSize}
                         fontWeight="600"
