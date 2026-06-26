@@ -175,11 +175,14 @@
     --fd-muted-fg: oklch(78.1% var(--tint-chroma) var(--tint-hue));
 }
 
-.prose :where(a:not([data-card])):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose
+    :where(a:not([data-card])):not(
+        :where([class~="not-prose"], [class~="not-prose"] *)
+    ) {
     text-decoration-color: currentColor;
 }
 
 ::selection {
-    background: #d4d1b6;
+    background: oklch(84.5% var(--tint-chroma) var(--tint-hue));
     color: #000;
 }
