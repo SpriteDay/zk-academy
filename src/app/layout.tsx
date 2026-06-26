@@ -9,11 +9,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
     metadataBase: process.env.NEXT_PUBLIC_BASE_URL,
-    title: "Interactive Zero-Knowledge Proves Academy",
+    title: "Interactive Zero-Knowledge Proofs Academy",
     description: "Learn ZK from 0 to 100",
-    keywords: ["Zero-Knowledge", "ZK", "Proves"],
+    keywords: ["Zero-Knowledge", "ZK", "Proofs"],
     openGraph: {
-        title: "Interactive Zero-Knowledge Proves Academy",
+        title: "Interactive Zero-Knowledge Proofs Academy",
         description: "Learn ZK from 0 to 100",
         images: [
             {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Interactive Zero-Knowledge Proves Academy",
+        title: "Interactive Zero-Knowledge Proofs Academy",
         description: "Learn ZK from 0 to 100",
         images: ["/twitter-image.jpg"],
     },
