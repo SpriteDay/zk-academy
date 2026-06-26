@@ -10,7 +10,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { ModuloClock } from "./modulo-clock"
 
 interface StepClockProps {
@@ -38,6 +38,9 @@ export function StepClock({
 }: StepClockProps) {
     const [inputValue, setInputValue] = useState(defaultSteps)
     const [valuePerStep, setValuePerStep] = useState(defaultValuePerStep)
+    const [seenValues, setSeenValues] = useState<Set<number>>(
+        () => new Set(),
+    )
 
     const multipliedValue = useMemo(
         () => inputValue * valuePerStep,
@@ -47,6 +50,31 @@ export function StepClock({
     const resultValue = useMemo<number>(() => {
         return multipliedValue % base
     }, [multipliedValue, base])
+
+    const highlightedValues = useMemo(
+        () => Array.from(seenValues),
+        [seenValues],
+    )
+
+    const handleValuePerStepChange = useCallback(
+        (newValuePerStep: number) => {
+            setValuePerStep(newValuePerStep)
+            setSeenValues(new Set())
+        },
+        [],
+    )
+
+    const handleStepsChange = useCallback(
+        (newSteps: number) => {
+            setInputValue(newSteps)
+            const result = (newSteps * valuePerStep) % base
+            setSeenValues((prev) => {
+                if (prev.has(result)) return prev
+                return new Set([...prev, result])
+            })
+        },
+        [valuePerStep, base],
+    )
 
     return (
         <Card>
@@ -59,6 +87,7 @@ export function StepClock({
                     base={base}
                     value={multipliedValue}
                     zeroLabel={zeroLabel}
+                    highlightedValues={highlightedValues}
                 />
             </CardContent>
             <CardFooter className="flex-col items-start gap-4 text-sm">
@@ -73,7 +102,7 @@ export function StepClock({
                         <WideSlider
                             defaultValue={[defaultValuePerStep]}
                             onValueChange={(value) => {
-                                setValuePerStep(value as number)
+                                handleValuePerStepChange(value as number)
                             }}
                             min={1}
                             max={maxValuePerStep}
@@ -89,7 +118,7 @@ export function StepClock({
                         <WideSlider
                             defaultValue={[defaultSteps]}
                             onValueChange={(value) => {
-                                setInputValue(value as number)
+                                handleStepsChange(value as number)
                             }}
                             min={0}
                             max={maxSteps}

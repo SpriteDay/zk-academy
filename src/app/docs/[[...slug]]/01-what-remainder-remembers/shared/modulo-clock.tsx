@@ -8,6 +8,7 @@ export interface ModuloClockProps {
     tickCount?: number
     labelEvery?: number
     zeroLabel?: string
+    highlightedValues?: number[]
 }
 
 const VIEWBOX_SIZE = 200
@@ -40,6 +41,7 @@ export function ModuloClock({
     tickCount: tickCountProp,
     labelEvery: labelEveryProp,
     zeroLabel,
+    highlightedValues,
 }: ModuloClockProps) {
     const rawId = useId()
     const id = rawId.replace(/:/g, "")
@@ -58,9 +60,14 @@ export function ModuloClock({
                     ? zeroLabel
                     : String(tickValue)
                 : null
-            return { angle, label, isLabeled }
+            return { angle, label, isLabeled, tickValue }
         })
     }, [tickCount, base, labelEvery, zeroLabel])
+
+    const highlightedSet = useMemo(
+        () => new Set(highlightedValues),
+        [highlightedValues],
+    )
 
     const labelFontSize = useMemo(() => {
         let maxLen = 1
@@ -148,8 +155,22 @@ export function ModuloClock({
                 )
             })}
 
+            {/* Highlights */}
+            {ticks.map(({ angle, label, tickValue }, i) =>
+                label !== null && highlightedSet.has(tickValue) ? (
+                    <circle
+                        key={`h${i}`}
+                        cx={polar(angle, LABEL_RADIUS).x}
+                        cy={polar(angle, LABEL_RADIUS).y}
+                        r={9}
+                        fill="var(--color-emerald-500)"
+                        opacity={0.2}
+                    />
+                ) : null,
+            )}
+
             {/* Labels */}
-            {ticks.map(({ angle, label }, i) =>
+            {ticks.map(({ angle, label, tickValue }, i) =>
                 label !== null ? (
                     <text
                         key={`l${i}`}
@@ -157,7 +178,11 @@ export function ModuloClock({
                         y={polar(angle, LABEL_RADIUS).y}
                         textAnchor="middle"
                         dominantBaseline="central"
-                        fill="var(--color-fd-foreground)"
+                        fill={
+                            highlightedSet.has(tickValue)
+                                ? "var(--color-emerald-400)"
+                                : "var(--color-fd-foreground)"
+                        }
                         fontSize={labelFontSize}
                         fontWeight="600"
                         fontFamily="ui-sans-serif, system-ui, sans-serif"
