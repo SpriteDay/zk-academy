@@ -31,15 +31,15 @@ You always get an answer from a finite number of integers, though hours keep goi
 
 <Callout>Well - to be clear you get a value from 0 to 11 by doing the actual modulo operation, but you see 12 on the clock when the input is cleanly divisible by 12 - that's just how clocks are usually labeled and it is a bit quirky</Callout>
 
-Modulo is essential for cryptography. The interesting property of modulo operation is that it is easy to do one direction, but impossible to revert. If you count hours, and it passed 42 hours - you know that you will see **6** on the clock. But if someone will steal your clock and they will see 6 hours - they wouldn't know if you waited for 42 hours, or 30 hours, or 18 hours
+Modulo is essential for cryptography. The interesting property of modulo operation is that it is easy to do in one direction, but impossible to revert. If you count hours, and 42 hours have passed - you know that you will see **6** on the clock. But if someone will steal your clock and they will see 6 hours - they wouldn't know if you waited for 42 hours, or 30 hours, or 18 hours
 
 ## Modulo and Primes
 
-Another interesting thing happens when we increase the "step" we do going in modulo clock. Previously we were sliding one hour per time, let's look at how the modulo clock will behave if we will add more hours per time:
+Another interesting thing happens when we increase the "step" we do going in modulo clock. Previously we were sliding one hour at a time, let's look at how the modulo clock will behave if we will add more hours per time:
 
 <MultipleHoursPerStepClock />
 
-Do you notice how going 2, 3, 4, and 6 makes clock "skip" some numbers? I mean if you think about that it's quite logical - for example step of 3 is basically going a quarter of clock every time. It doesn't matter how long you jump 3 hours ahead - you can't get a number that would get 2 as a result of modulo operation
+Do you notice how going 2, 3, 4, and 6 makes the clock "skip" some numbers? I mean if you think about that it's quite logical - for example a step of 3 is basically going a quarter of clock every time. It doesn't matter how long you jump 3 hours ahead - you can't get a number that would get 2 as a result of modulo operation
 
 Same with 4 - you go 1/3 of the clock each time because well - 4 is 1/3 of 12
 
@@ -50,14 +50,14 @@ Example of ones that give you whole spectrum of numbers as result of modulo are:
 
 You can notice that 5 and 7 don't divide 12 cleanly. This "always off" division is what makes values get pushed as clock keeps going around
 
-Though jumping over numbers feels quite cool - it sucks for properties of the operation. If jumping 3 steps over 12 hours clock is the same as jumping 1 step over 4 ticks circle - why pay more?
+Though jumping over numbers feels quite cool - it sucks for properties of the operation. If jumping 3 steps over a 12 hours clock is the same as jumping 1 step over a 4 ticks circle - why pay more?
 
-Let's see how the same interactive clock will behave when we have a prime number as base of the clock. We pick 17 for no arbitrary reason, try to move sliders to see how it will behave now:
+Let's see how the same interactive clock will behave when we have a prime number as base of the clock. We pick 17 for no particular reason, try to move sliders to see how it will behave now:
 
 <PrimeStepClock />
 
-As you can see, whatever step we pick - it always cover full numbers range. The reason is - we can't pick such step that would divide the prime number cleanly, that's literally the only property defining a prime number
+As you can see, whatever step we pick - it always cover the full numbers range. The reason is - we can't pick such a step that would divide the prime number cleanly, that's literally the only property defining a prime number
 
 ## Small summary
 
-We learned a cool property of modulo operation - "one direction-ness", as well as how to pick a modulo base that would juice the heck of it. Let's try to do something practical now!
+We learned a cool property of modulo operation - "one direction-ness", as well as how to pick a modulo base that would juice the heck out of it. Let's try to do something practical now!
