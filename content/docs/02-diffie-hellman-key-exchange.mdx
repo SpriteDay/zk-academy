@@ -7,11 +7,11 @@ description: How to secretly agree on a shared key
 
 Let's imagine we want to have a secret conversation with a friend over the internet. You can agree on a shared key, that you will use to encode and decode messages to each other. To exchange the private key, you can meet privately. You will share the key, return each to your home, and text each other using encoded messages
 
-In some sense, that's how we did cryptography for centuries - exchange a shared key privately, and use it to encode your messages. When the message is encrypted, you and your friend are the only one who can decrypt it. You can send a postman with your encoded message, and if they will get curious and read the letter - they won't be able to decrypt it. You can even broadcast your message over the radio - nobody else has a secret key to it, so they won't get the actual content
+In some sense, that's how we did cryptography for centuries - exchange a shared key privately, and use it to encode the messages. When a message is encrypted, you and your friend are the only one who can decrypt it. You can send a postman with your encoded message, and if they will get curious and read the letter - they won't be able to decrypt it. You can even broadcast your message over the radio - nobody else has a secret key to it, so they won't get the actual content
 
-But can you agree on a secret shared key over the same unprotected channel you deliver the encrypted message? Just to exclude the "meet at the alley privately" part. Sounds quite tough but it is possible, and already was done by your browser as you opened this page
+But can you agree on a shared key over the same unprotected channel you deliver the encrypted message? Just to exclude the "meet at the alley privately" part. Sounds quite tough but it is possible, and already was done by your browser as you opened this page
 
 ## Sharing secrets publicly
 
-If you send unencrypted messages over the internet - you should consider the internet space a public place. Your ISP can see whatever requests you made as it delivers them. A server that your message arrives at, is owned by some company that can secretly listen all incoming traffic. They probably won't do that over you asking how your friend is doing, but if you send your bank card details, or discuss something extremely sensitive - someone can listen it and use it
+If you send unencrypted messages over the internet - you should consider the internet space a public place. Your ISP can see whatever requests you made as it delivers them. A server that your message arrives at, is owned by some company that can secretly listen all incoming traffic. They probably won't do that over you asking your friend "how are you doing?", but if you send your bank card details, or discuss something extremely sensitive - someone can listen it
 
