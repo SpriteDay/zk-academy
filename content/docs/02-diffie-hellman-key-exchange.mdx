@@ -7,6 +7,8 @@ description: How to keep secrets in a public space
 
 Let's imagine we want to have a secret conversation with a friend over the internet. You can agree on a shared key, that you will use to encode your messages. To exchange the private key, you can meet privately. You will share the key, return each to your homes, and text each other using encoded messages
 
+<KeyExchangeMeetup />
+
 In some sense, that's how we did cryptography for centuries - exchange a shared key privately, and use it to encode the messages. When a message is encrypted, you and your friend are the only ones who can decipher it. You can send a postman with your encoded message, and if a postman will get curious and read it - they won't be able to decrypt it. You can even broadcast your message over the radio - nobody else has a secret key to it, so they won't get the actual content
 
 <Callout>
@@ -15,6 +17,8 @@ locks and unlocks the message. The hard part was never the encryption
 itself, but getting that key to your friend without anyone else
 seeing it. Cryptographers call this the **key distribution problem**.
 </Callout>
+
+<SymmetricCipherExchange />
 
 But can you agree on a shared key over the same unprotected channel you deliver the encrypted message over? Just to exclude the "meet at the alley privately" part. Sounds quite tough but it is possible, and already was done by your browser as you opened this page
 
@@ -57,3 +61,9 @@ We **believe** that we can't do the reverse of this operation as easy as doing i
 You also can notice that some combination of numbers just suck. For example try to do **generator (g)** equals to **5** and **modulus (p)** equals to **10**. Look at **modulo** result - it is always **5**, because they have a common factor. Now try to put some prime number into **modulus (p)**, like **13** or **17** - and try different **exponents (x)**. The sequence of modulo will be quite random, but will cover all possible remainder values from **0** to **p - 1** (Remember how we explored this behavior in [modulo chapter](/docs/01-what-remainder-remembers#modulo-and-primes)?)
 
 ## To the actual cryptography
+
+<DiffieHellmanExchange />
+
+<EavesdropperChallenge />
+
+<RealisticDiffieHellman />

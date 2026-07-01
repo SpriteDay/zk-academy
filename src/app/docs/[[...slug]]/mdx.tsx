@@ -4,6 +4,11 @@ import { HourClock } from "./01-what-remainder-remembers/1-hour-clock"
 import { MultipleHoursPerStepClock } from "./01-what-remainder-remembers/2-multiple-hours-per-step-clock"
 import { PrimeStepClock } from "./01-what-remainder-remembers/3-prime-step-clock"
 import { ExponentiationRemainder } from "./02-diffie-hellman-key-exchange/1-exponentiation-remainder"
+import { KeyExchangeMeetup } from "./02-diffie-hellman-key-exchange/2-key-exchange-meetup"
+import { SymmetricCipherExchange } from "./02-diffie-hellman-key-exchange/3-symmetric-cipher-exchange"
+import { DiffieHellmanExchange } from "./02-diffie-hellman-key-exchange/4-diffie-hellman-exchange"
+import { EavesdropperChallenge } from "./02-diffie-hellman-key-exchange/5-eavesdropper-challenge"
+import { RealisticDiffieHellman } from "./02-diffie-hellman-key-exchange/6-realistic-diffie-hellman"
 
 export function getMDXComponents(components?: MDXComponents) {
     return {
@@ -12,6 +17,11 @@ export function getMDXComponents(components?: MDXComponents) {
         MultipleHoursPerStepClock,
         PrimeStepClock,
         ExponentiationRemainder,
+        KeyExchangeMeetup,
+        SymmetricCipherExchange,
+        DiffieHellmanExchange,
+        EavesdropperChallenge,
+        RealisticDiffieHellman,
         ...components,
     } satisfies MDXComponents
 }
