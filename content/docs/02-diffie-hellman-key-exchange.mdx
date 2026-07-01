@@ -44,14 +44,16 @@ What is actually hard about it? The incredible thing that - even if you know `g`
 I set up a little interactive element showing how `g^x` gets broken down by modulo operation. You can try different variable values to see how it would affect the modulo:
 <ExponentiationRemainder />
 
-You can actually notice that for some values, the part that get's divided by `p` is super big. But at the end we get take only this little green piece. In some sense that's the sauce - you can get an `x` from the `g^x` - you just divide the result by `x` in a loop
+You can actually notice that for some values, `g^x` is super big. But at the end we take only little green piece - remainder from modulo operation. In some sense that's the sauce.
 
-But when you loose the chunk that is the key to getting the original power - you can't do it no more
+You can recover an `x` from the `g^x` - you just divide the result by `x` in a loop and count how many times you did that. But when you loose main chunk of the result valu, which is the key to getting the original power - you can't divide it in a loop no more
 
-I'd compare it - it is easy to solve the Rubick's Cube if you rotate it only by X axis. It is easy to solve it if you rotate it only by Y axis. But try to rotate it in both and then actually torn a piece of it - and good luck restoring the original state - that's essentially what we did here.
+I'd compare it to this - it's easy to solve a Rubick's Cube if you rotate it only by X axis. It is easy to solve it if you rotate it only by Y axis. But try to rotate it in both and then actually torn a piece of it - and good luck restoring the original state - that's essentially what we did here.
 
 <Callout>
 We **believe** that we can't do the reverse of this operation as easy as doing it the straight way, but we actually have no prove. See [`P = NP` problem](https://en.wikipedia.org/wiki/P_versus_NP_problem). Nonetheless we base a lot of our cryptography believing that some operations are much harder to do one way then another
 </Callout>
 
-You also can notice that some combination of numbers just suck. For example try to do **generator (g)** equals to **5** and **modulus (p)** equals to **10**. Look at **modulo** result - it is always **5**, because they have a common factor. Now try to put some prime number into **modulus (p)**, like **13** or **17** - and try different **exponents (x)**. The sequence of modulo will be quite random, but covering all possible remainder values (Remember how we explored this behavior in [modulo chapter](/docs/01-what-remainder-remembers#modulo-and-primes)?)
+You also can notice that some combination of numbers just suck. For example try to do **generator (g)** equals to **5** and **modulus (p)** equals to **10**. Look at **modulo** result - it is always **5**, because they have a common factor. Now try to put some prime number into **modulus (p)**, like **13** or **17** - and try different **exponents (x)**. The sequence of modulo will be quite random, but will cover all possible remainder values from **0** to **p - 1** (Remember how we explored this behavior in [modulo chapter](/docs/01-what-remainder-remembers#modulo-and-primes)?)
+
+## To the actual cryptography
