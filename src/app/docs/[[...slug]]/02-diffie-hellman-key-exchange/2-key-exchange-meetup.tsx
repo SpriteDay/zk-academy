@@ -15,27 +15,24 @@ import {
     Device,
     DEVICE_WIDTH,
     LEFT_DEVICE_X,
-    MONO_FONT,
     RIGHT_DEVICE_X,
     sideArcPath,
     SideArc,
+    SpeakerWaves,
     STAGE_WIDTH,
-    SVG_TEXT_TONE,
-    Tap,
 } from "./shared/exchange-stage"
 
-const STAGE_HEIGHT = 262
+const STAGE_HEIGHT = 224
 const DEVICE_Y = 92
 const CHANNEL_Y = DEVICE_Y + 59
-const TAP_X = STAGE_WIDTH / 2
-const EYE_Y = 238
 const ARC_LIFT = 64
+const ARC_Y = DEVICE_Y - 4
 
 const LEFT_TOP_X = LEFT_DEVICE_X + DEVICE_WIDTH / 2
 const RIGHT_TOP_X = RIGHT_DEVICE_X + DEVICE_WIDTH / 2
 
-const CIPHER_A = "#9f!a2"
-const CIPHER_B = "b3?e0x"
+const CIPHER_A = "9#4∆7%"
+const CIPHER_B = "3§8×5?"
 
 interface KeyExchangeMeetupProps {
     partyA?: string
@@ -43,8 +40,8 @@ interface KeyExchangeMeetupProps {
 }
 
 export function KeyExchangeMeetup({
-    partyA = "Jeffrey",
-    partyB = "Bill",
+    partyA = "Bonnie",
+    partyB = "Clyde",
 }: KeyExchangeMeetupProps) {
     const rawId = useId()
     const id = rawId.replace(/:/g, "")
@@ -56,13 +53,9 @@ export function KeyExchangeMeetup({
     const msg1Begin = `${keyAnimId}.end+0.9s`
     const msg2Begin = `${msg1AnimId}.end+0.7s`
 
-    const arcPath = sideArcPath(
-        LEFT_TOP_X,
-        DEVICE_Y - 4,
-        RIGHT_TOP_X,
-        DEVICE_Y - 4,
-        ARC_LIFT,
-    )
+    const arcPath = sideArcPath(LEFT_TOP_X, ARC_Y, RIGHT_TOP_X, ARC_Y, ARC_LIFT)
+    const msg1Path = `M ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y} L ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y}`
+    const msg2Path = `M ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y} L ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y}`
 
     return (
         <Card>
@@ -77,27 +70,118 @@ export function KeyExchangeMeetup({
                     viewBox={`0 0 ${STAGE_WIDTH} ${STAGE_HEIGHT}`}
                     className="mx-auto block w-full max-w-xl"
                     role="img"
-                    aria-label="Two devices exchange a secret key over a private side channel, then send encrypted messages over a public channel watched by an eavesdropper"
+                    aria-label={`${partyA} and ${partyB} exchange a secret key over a private side channel, then send encrypted messages over a public channel`}
                 >
+                    {/* Private side channel: grey when idle, green while the key travels */}
                     <SideArc
                         x1={LEFT_TOP_X}
-                        y1={DEVICE_Y - 4}
+                        y1={ARC_Y}
                         x2={RIGHT_TOP_X}
-                        y2={DEVICE_Y - 4}
+                        y2={ARC_Y}
                         lift={ARC_LIFT}
                     />
+                    <SideArc
+                        x1={LEFT_TOP_X}
+                        y1={ARC_Y}
+                        x2={RIGHT_TOP_X}
+                        y2={ARC_Y}
+                        lift={ARC_LIFT}
+                        className="stroke-emerald-600 dark:stroke-emerald-400"
+                        baseOpacity={0}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0;1;1;0"
+                            keyTimes="0;0.1;0.9;1"
+                            begin={keyBegin}
+                            dur="2.6s"
+                        />
+                    </SideArc>
+                    <text
+                        x={STAGE_WIDTH / 2}
+                        y={ARC_Y - ARC_LIFT * 0.75 - 12}
+                        textAnchor="middle"
+                        fontSize={9.5}
+                        fontFamily="ui-sans-serif, system-ui, sans-serif"
+                        className="fill-fd-muted-foreground"
+                    >
+                        sharing in the private alley
+                    </text>
+
+                    {/* Public channel: lights up in the speaker's color */}
                     <Channel
                         x1={LEFT_DEVICE_X + DEVICE_WIDTH}
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <Tap x={TAP_X} channelY={CHANNEL_Y} eyeY={EYE_Y} />
-                    <Chip
-                        x={TAP_X + 50}
-                        y={EYE_Y}
-                        text={CIPHER_A}
-                        tone="rose"
-                    />
+                    <line
+                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
+                        y1={CHANNEL_Y}
+                        x2={RIGHT_DEVICE_X}
+                        y2={CHANNEL_Y}
+                        strokeWidth={6.5}
+                        strokeLinecap="round"
+                        opacity={0}
+                        className="stroke-indigo-400/50 dark:stroke-indigo-400/40"
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0;1;1;0"
+                            keyTimes="0;0.12;0.88;1"
+                            begin={msg1Begin}
+                            dur="2s"
+                        />
+                    </line>
+                    <line
+                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
+                        y1={CHANNEL_Y}
+                        x2={RIGHT_DEVICE_X}
+                        y2={CHANNEL_Y}
+                        strokeWidth={6.5}
+                        strokeLinecap="round"
+                        opacity={0}
+                        className="stroke-amber-400/50 dark:stroke-amber-400/40"
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0;1;1;0"
+                            keyTimes="0;0.12;0.88;1"
+                            begin={msg2Begin}
+                            dur="2s"
+                        />
+                    </line>
+
+                    {/* Speaking out loud */}
+                    <SpeakerWaves
+                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
+                        y={CHANNEL_Y}
+                        facing="right"
+                        tone="indigo"
+                        baseOpacity={0}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0;0.9;0.9;0"
+                            keyTimes="0;0.12;0.88;1"
+                            begin={msg1Begin}
+                            dur="2s"
+                        />
+                    </SpeakerWaves>
+                    <SpeakerWaves
+                        x={RIGHT_DEVICE_X - 10}
+                        y={CHANNEL_Y}
+                        facing="left"
+                        tone="amber"
+                        baseOpacity={0}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0;0.9;0.9;0"
+                            keyTimes="0;0.12;0.88;1"
+                            begin={msg2Begin}
+                            dur="2s"
+                        />
+                    </SpeakerWaves>
 
                     <Device
                         x={LEFT_DEVICE_X}
@@ -146,32 +230,13 @@ export function KeyExchangeMeetup({
                         />
                     </g>
 
-                    {/* Encrypted packets over the public channel */}
-                    <g opacity="0">
-                        <rect
-                            x={-27}
-                            y={-10}
-                            width={54}
-                            height={20}
-                            rx={10}
-                            fill="var(--color-fd-card)"
-                            strokeWidth={1}
-                            className="stroke-fd-border"
-                        />
-                        <text
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            fontSize={9.5}
-                            fontFamily={MONO_FONT}
-                            className={SVG_TEXT_TONE.muted}
-                        >
-                            {CIPHER_A}
-                        </text>
+                    {/* Encrypted messages over the public channel */}
+                    <Chip x={0} y={0} text={CIPHER_A} baseOpacity={0}>
                         <animateMotion
                             id={msg1AnimId}
                             begin={msg1Begin}
                             dur="2s"
-                            path={`M ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y} L ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y}`}
+                            path={msg1Path}
                         />
                         <animate
                             attributeName="opacity"
@@ -180,32 +245,13 @@ export function KeyExchangeMeetup({
                             begin={msg1Begin}
                             dur="2s"
                         />
-                    </g>
-                    <g opacity="0">
-                        <rect
-                            x={-27}
-                            y={-10}
-                            width={54}
-                            height={20}
-                            rx={10}
-                            fill="var(--color-fd-card)"
-                            strokeWidth={1}
-                            className="stroke-fd-border"
-                        />
-                        <text
-                            textAnchor="middle"
-                            dominantBaseline="central"
-                            fontSize={9.5}
-                            fontFamily={MONO_FONT}
-                            className={SVG_TEXT_TONE.muted}
-                        >
-                            {CIPHER_B}
-                        </text>
+                    </Chip>
+                    <Chip x={0} y={0} text={CIPHER_B} baseOpacity={0}>
                         <animateMotion
                             id={msg2AnimId}
                             begin={msg2Begin}
                             dur="2s"
-                            path={`M ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y} L ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y}`}
+                            path={msg2Path}
                         />
                         <animate
                             attributeName="opacity"
@@ -214,29 +260,7 @@ export function KeyExchangeMeetup({
                             begin={msg2Begin}
                             dur="2s"
                         />
-                    </g>
-
-                    {/* Eavesdropper ping when a packet passes the tap */}
-                    <circle
-                        cx={TAP_X}
-                        cy={CHANNEL_Y}
-                        r={3}
-                        opacity={0}
-                        className="fill-rose-500 dark:fill-rose-400"
-                    >
-                        <animate
-                            attributeName="r"
-                            values="3;12"
-                            begin={`${msg1AnimId}.begin+1s;${msg2AnimId}.begin+1s`}
-                            dur="0.8s"
-                        />
-                        <animate
-                            attributeName="opacity"
-                            values="0.8;0"
-                            begin={`${msg1AnimId}.begin+1s;${msg2AnimId}.begin+1s`}
-                            dur="0.8s"
-                        />
-                    </circle>
+                    </Chip>
                 </svg>
             </CardContent>
         </Card>

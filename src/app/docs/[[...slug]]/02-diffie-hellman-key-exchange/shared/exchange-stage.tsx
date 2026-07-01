@@ -1,7 +1,7 @@
 "use client"
 
 import { Eye } from "lucide-react"
-import { useId } from "react"
+import { useId, type ReactNode } from "react"
 
 export type Tone = "indigo" | "amber" | "rose" | "emerald" | "muted"
 
@@ -21,6 +21,14 @@ export const SVG_CHIP_STROKE_TONE: Record<Tone, string> = {
     rose: "stroke-rose-500/50",
     emerald: "stroke-emerald-500/60",
     muted: "stroke-fd-border",
+}
+
+export const SVG_STROKE_TONE: Record<Tone, string> = {
+    indigo: "stroke-indigo-500 dark:stroke-indigo-400",
+    amber: "stroke-amber-500 dark:stroke-amber-400",
+    rose: "stroke-rose-500 dark:stroke-rose-400",
+    emerald: "stroke-emerald-600 dark:stroke-emerald-400",
+    muted: "stroke-fd-muted-foreground",
 }
 
 export const SVG_DOT_TONE: Record<Tone, string> = {
@@ -117,7 +125,7 @@ export function Device({
             <text
                 x={x + 11}
                 y={y + 18}
-                fontSize={9.5}
+                fontSize={11}
                 fontWeight={600}
                 fill="var(--color-fd-foreground)"
                 fontFamily="ui-sans-serif, system-ui, sans-serif"
@@ -144,8 +152,8 @@ export function Device({
                 <text
                     key={i}
                     x={screenX + 8}
-                    y={screenY + 17 + i * 17.5}
-                    fontSize={8.5}
+                    y={screenY + 18 + i * 18.5}
+                    fontSize={9.5}
                     fontFamily={MONO_FONT}
                     className={SVG_TEXT_TONE[line.tone ?? "muted"]}
                 >
@@ -156,7 +164,7 @@ export function Device({
                 <rect
                     key={i}
                     x={screenX + 8}
-                    y={screenY + 12 + i * 17.5}
+                    y={screenY + 12 + i * 18.5}
                     width={(screenWidth - 16) * hiddenBarWidths[i % 4]}
                     height={7}
                     rx={3.5}
@@ -194,7 +202,7 @@ export function Channel({ x1, x2, y }: { x1: number; x2: number; y: number }) {
 }
 
 export function chipWidth(text: string) {
-    return text.length * 5.7 + 16
+    return text.length * 6.3 + 16
 }
 
 interface ChipProps {
@@ -203,19 +211,29 @@ interface ChipProps {
     text: string
     tone?: Tone
     className?: string
+    baseOpacity?: number
+    children?: ReactNode
 }
 
-export function Chip({ x, y, text, tone = "muted", className }: ChipProps) {
+export function Chip({
+    x,
+    y,
+    text,
+    tone = "muted",
+    className,
+    baseOpacity,
+    children,
+}: ChipProps) {
     const width = chipWidth(text)
     return (
         <g transform={`translate(${x}, ${y})`}>
-            <g className={className}>
+            <g className={className} opacity={baseOpacity}>
                 <rect
                     x={-width / 2}
-                    y={-10}
+                    y={-11}
                     width={width}
-                    height={20}
-                    rx={10}
+                    height={22}
+                    rx={11}
                     fill="var(--color-fd-card)"
                     strokeWidth={1}
                     className={SVG_CHIP_STROKE_TONE[tone]}
@@ -223,12 +241,13 @@ export function Chip({ x, y, text, tone = "muted", className }: ChipProps) {
                 <text
                     textAnchor="middle"
                     dominantBaseline="central"
-                    fontSize={9.5}
+                    fontSize={10.5}
                     fontFamily={MONO_FONT}
                     className={SVG_TEXT_TONE[tone]}
                 >
                     {text}
                 </text>
+                {children}
             </g>
         </g>
     )
@@ -278,6 +297,46 @@ export function Tap({ x, channelY, eyeY }: TapProps) {
     )
 }
 
+const WAVE_RADII = [7, 12, 17]
+
+interface SpeakerWavesProps {
+    x: number
+    y: number
+    facing: "right" | "left"
+    tone: Tone
+    baseOpacity?: number
+    children?: ReactNode
+}
+
+export function SpeakerWaves({
+    x,
+    y,
+    facing,
+    tone,
+    baseOpacity,
+    children,
+}: SpeakerWavesProps) {
+    const scale = facing === "left" ? -1 : 1
+    return (
+        <g
+            transform={`translate(${x}, ${y}) scale(${scale}, 1)`}
+            opacity={baseOpacity}
+        >
+            {WAVE_RADII.map((r) => (
+                <path
+                    key={r}
+                    d={`M ${(0.64 * r).toFixed(1)} ${(-0.77 * r).toFixed(1)} A ${r} ${r} 0 0 1 ${(0.64 * r).toFixed(1)} ${(0.77 * r).toFixed(1)}`}
+                    fill="none"
+                    strokeWidth={1.6}
+                    strokeLinecap="round"
+                    className={SVG_STROKE_TONE[tone]}
+                />
+            ))}
+            {children}
+        </g>
+    )
+}
+
 export function sideArcPath(
     x1: number,
     y1: number,
@@ -288,26 +347,36 @@ export function sideArcPath(
     return `M ${x1} ${y1} C ${x1} ${y1 - lift}, ${x2} ${y2 - lift}, ${x2} ${y2}`
 }
 
+interface SideArcProps {
+    x1: number
+    y1: number
+    x2: number
+    y2: number
+    lift: number
+    className?: string
+    baseOpacity?: number
+    children?: ReactNode
+}
+
 export function SideArc({
     x1,
     y1,
     x2,
     y2,
     lift,
-}: {
-    x1: number
-    y1: number
-    x2: number
-    y2: number
-    lift: number
-}) {
+    className = "stroke-fd-muted-foreground/50",
+    baseOpacity,
+    children,
+}: SideArcProps) {
     return (
         <path
             d={sideArcPath(x1, y1, x2, y2, lift)}
             fill="none"
-            className="stroke-emerald-600/50 dark:stroke-emerald-400/40"
+            className={className}
             strokeWidth={1.5}
-            strokeDasharray="4 4"
-        />
+            opacity={baseOpacity}
+        >
+            {children}
+        </path>
     )
 }

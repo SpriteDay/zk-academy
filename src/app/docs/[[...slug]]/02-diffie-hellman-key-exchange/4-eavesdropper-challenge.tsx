@@ -47,8 +47,8 @@ interface EavesdropperChallengeProps {
 }
 
 export function EavesdropperChallenge({
-    partyA = "Jeffrey",
-    partyB = "Bill",
+    partyA = "Butch",
+    partyB = "Sundance",
 }: EavesdropperChallengeProps) {
     const [secretA, setSecretA] = useState(INITIAL_SECRET_A)
     const [secretB, setSecretB] = useState(INITIAL_SECRET_B)

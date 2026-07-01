@@ -19,16 +19,15 @@ import {
     HTML_TEXT_TONE,
     LEFT_DEVICE_X,
     RIGHT_DEVICE_X,
+    SpeakerWaves,
     STAGE_WIDTH,
-    Tap,
 } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
 
-const STAGE_HEIGHT = 250
+const STAGE_HEIGHT = 170
 const DEVICE_Y = 36
 const CHANNEL_Y = DEVICE_Y + 59
-const TAP_X = STAGE_WIDTH / 2
-const EYE_Y = 222
+const CENTER_X = STAGE_WIDTH / 2
 
 // RFC 3526, group 14: 2048-bit MODP safe prime
 const P = BigInt(
@@ -73,8 +72,8 @@ interface RealisticDiffieHellmanProps {
 }
 
 export function RealisticDiffieHellman({
-    partyA = "Jeffrey",
-    partyB = "Bill",
+    partyA = "Frank",
+    partyB = "Jesse",
 }: RealisticDiffieHellmanProps) {
     const [secretA, setSecretA] = useState(DEFAULT_SECRET_A)
     const [secretB, setSecretB] = useState(DEFAULT_SECRET_B)
@@ -114,16 +113,44 @@ export function RealisticDiffieHellman({
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <Tap x={TAP_X} channelY={CHANNEL_Y} eyeY={EYE_Y} />
+                    <SpeakerWaves
+                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
+                        y={CHANNEL_Y}
+                        facing="right"
+                        tone="indigo"
+                        baseOpacity={0.4}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0.3;0.8;0.3"
+                            dur="3s"
+                            repeatCount="indefinite"
+                        />
+                    </SpeakerWaves>
+                    <SpeakerWaves
+                        x={RIGHT_DEVICE_X - 10}
+                        y={CHANNEL_Y}
+                        facing="left"
+                        tone="amber"
+                        baseOpacity={0.4}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0.3;0.8;0.3"
+                            dur="3s"
+                            begin="1.5s"
+                            repeatCount="indefinite"
+                        />
+                    </SpeakerWaves>
 
                     <Chip
-                        x={TAP_X - 52}
+                        x={CENTER_X - 52}
                         y={CHANNEL_Y - 44}
                         text={`g = 2`}
                         tone="rose"
                     />
                     <Chip
-                        x={TAP_X + 42}
+                        x={CENTER_X + 42}
                         y={CHANNEL_Y - 44}
                         text={`p = ${pDigits} digits`}
                         tone="rose"
@@ -166,7 +193,7 @@ export function RealisticDiffieHellman({
 
                     <Chip
                         key={`a-${publicA}`}
-                        x={TAP_X - 30}
+                        x={CENTER_X - 30}
                         y={CHANNEL_Y - 16}
                         text={`A = ${hexShort(publicA, 6, 4)}`}
                         tone="rose"
@@ -174,7 +201,7 @@ export function RealisticDiffieHellman({
                     />
                     <Chip
                         key={`b-${publicB}`}
-                        x={TAP_X + 30}
+                        x={CENTER_X + 30}
                         y={CHANNEL_Y + 16}
                         text={`B = ${hexShort(publicB, 6, 4)}`}
                         tone="rose"

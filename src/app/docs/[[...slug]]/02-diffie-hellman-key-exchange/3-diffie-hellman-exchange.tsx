@@ -19,16 +19,15 @@ import {
     HTML_TEXT_TONE,
     LEFT_DEVICE_X,
     RIGHT_DEVICE_X,
+    SpeakerWaves,
     STAGE_WIDTH,
-    Tap,
 } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
 
-const STAGE_HEIGHT = 250
+const STAGE_HEIGHT = 170
 const DEVICE_Y = 36
 const CHANNEL_Y = DEVICE_Y + 59
-const TAP_X = STAGE_WIDTH / 2
-const EYE_Y = 222
+const CENTER_X = STAGE_WIDTH / 2
 
 const DEFAULT_G = 5
 const DEFAULT_P = 23
@@ -41,8 +40,8 @@ interface DiffieHellmanExchangeProps {
 }
 
 export function DiffieHellmanExchange({
-    partyA = "Jeffrey",
-    partyB = "Bill",
+    partyA = "Ronnie",
+    partyB = "Reggie",
 }: DiffieHellmanExchangeProps) {
     const [g, setG] = useState(DEFAULT_G)
     const [p, setP] = useState(DEFAULT_P)
@@ -74,16 +73,44 @@ export function DiffieHellmanExchange({
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <Tap x={TAP_X} channelY={CHANNEL_Y} eyeY={EYE_Y} />
+                    <SpeakerWaves
+                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
+                        y={CHANNEL_Y}
+                        facing="right"
+                        tone="indigo"
+                        baseOpacity={0.4}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0.3;0.8;0.3"
+                            dur="3s"
+                            repeatCount="indefinite"
+                        />
+                    </SpeakerWaves>
+                    <SpeakerWaves
+                        x={RIGHT_DEVICE_X - 10}
+                        y={CHANNEL_Y}
+                        facing="left"
+                        tone="amber"
+                        baseOpacity={0.4}
+                    >
+                        <animate
+                            attributeName="opacity"
+                            values="0.3;0.8;0.3"
+                            dur="3s"
+                            begin="1.5s"
+                            repeatCount="indefinite"
+                        />
+                    </SpeakerWaves>
 
                     <Chip
-                        x={TAP_X - 37}
+                        x={CENTER_X - 37}
                         y={CHANNEL_Y - 33}
                         text={`g = ${g}`}
                         tone="rose"
                     />
                     <Chip
-                        x={TAP_X + 37}
+                        x={CENTER_X + 37}
                         y={CHANNEL_Y - 33}
                         text={`p = ${p}`}
                         tone="rose"
@@ -116,7 +143,7 @@ export function DiffieHellmanExchange({
 
                     <Chip
                         key={`a-${publicA}-${p}`}
-                        x={TAP_X - 48}
+                        x={CENTER_X - 48}
                         y={CHANNEL_Y}
                         text={`A = ${publicA} →`}
                         tone="rose"
@@ -124,7 +151,7 @@ export function DiffieHellmanExchange({
                     />
                     <Chip
                         key={`b-${publicB}-${p}`}
-                        x={TAP_X + 48}
+                        x={CENTER_X + 48}
                         y={CHANNEL_Y}
                         text={`← B = ${publicB}`}
                         tone="rose"
