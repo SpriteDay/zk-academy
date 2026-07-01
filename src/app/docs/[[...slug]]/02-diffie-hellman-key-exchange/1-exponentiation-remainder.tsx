@@ -23,6 +23,10 @@ const MIN_P = 2
 const MAX_P = 17
 const MAX_DISPLAY = 500
 
+const G_COLOR = "text-indigo-700 dark:text-indigo-200"
+const X_COLOR = "text-amber-700 dark:text-amber-200"
+const P_COLOR = "text-rose-700 dark:text-rose-200"
+
 export function ExponentiationRemainder() {
     const [g, setG] = useState(DEFAULT_G)
     const [x, setX] = useState(DEFAULT_X)
@@ -31,6 +35,16 @@ export function ExponentiationRemainder() {
     const total = useMemo(() => g ** x, [g, x])
     const remainder = total % p
     const fullGroups = Math.floor(total / p)
+
+    const totalDisplay = useMemo(() => {
+        if (total > 99999) {
+            return new Intl.NumberFormat("en", {
+                notation: "compact",
+                maximumFractionDigits: 1,
+            }).format(total)
+        }
+        return total.toLocaleString()
+    }, [total])
 
     const maxRenderedGroups = Math.floor(MAX_DISPLAY / p)
     const renderedGroups = Math.min(fullGroups, maxRenderedGroups)
@@ -89,8 +103,14 @@ export function ExponentiationRemainder() {
                 <div className="flex w-full flex-col gap-4 py-2 md:flex-row">
                     <div className="flex w-full flex-col items-center gap-4 md:w-2/3">
                         <Label>
-                            Generator (g):{" "}
-                            <span className="font-bold tabular-nums">{g}</span>
+                            <span>
+                                Generator (<span className={G_COLOR}>g</span>):{" "}
+                                <span
+                                    className={`font-bold tabular-nums ${G_COLOR}`}
+                                >
+                                    {g}
+                                </span>
+                            </span>
                         </Label>
                         <WideSlider
                             defaultValue={[DEFAULT_G]}
@@ -101,8 +121,14 @@ export function ExponentiationRemainder() {
                             className="mx-auto w-full"
                         />
                         <Label>
-                            Exponent (x):{" "}
-                            <span className="font-bold tabular-nums">{x}</span>
+                            <span>
+                                Exponent (<span className={X_COLOR}>x</span>):{" "}
+                                <span
+                                    className={`font-bold tabular-nums ${X_COLOR}`}
+                                >
+                                    {x}
+                                </span>
+                            </span>
                         </Label>
                         <WideSlider
                             defaultValue={[DEFAULT_X]}
@@ -113,8 +139,14 @@ export function ExponentiationRemainder() {
                             className="mx-auto w-full"
                         />
                         <Label>
-                            Modulus (p):{" "}
-                            <span className="font-bold tabular-nums">{p}</span>
+                            <span>
+                                Modulus (<span className={P_COLOR}>p</span>):{" "}
+                                <span
+                                    className={`font-bold tabular-nums ${P_COLOR}`}
+                                >
+                                    {p}
+                                </span>
+                            </span>
                         </Label>
                         <WideSlider
                             defaultValue={[DEFAULT_P]}
@@ -125,14 +157,27 @@ export function ExponentiationRemainder() {
                             className="mx-auto w-full"
                         />
                     </div>
-                    <div className="flex w-full flex-col items-center justify-center gap-1 text-center md:w-1/3">
-                        <span className="text-muted-foreground text-xs">
-                            {g}
-                            <sup>{x}</sup> mod {p}
-                        </span>
-                        <span className="text-2xl font-bold tabular-nums">
-                            {remainder}
-                        </span>
+                    <div className="flex w-full flex-col items-center justify-center gap-3 text-center md:w-1/3">
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="text-muted-foreground text-xs">
+                                <span className={G_COLOR}>{g}</span>
+                                <sup className={X_COLOR}>{x}</sup>
+                            </span>
+                            <span className="text-muted-foreground text-xl font-bold tabular-nums">
+                                {totalDisplay}
+                            </span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="text-muted-foreground text-xs">
+                                <span className={G_COLOR}>{g}</span>
+                                <sup className={X_COLOR}>{x}</sup>
+                                {" mod "}
+                                <span className={P_COLOR}>{p}</span>
+                            </span>
+                            <span className="text-3xl font-bold text-emerald-500 tabular-nums">
+                                {remainder}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </CardFooter>
