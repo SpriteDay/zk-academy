@@ -37,6 +37,19 @@ Something similar happens with this set of operations:
 g^x mod p
 ```
 
-So it's - you take some number to a power, and do modulo operation over the result. What is actually hard about it? The incredible thing that - even if you know `g` and `p` - you can't recover the number `x` - the power you took `g` to
+So it's - you take a number `g` (called "generator" since we produce from it) to a power of `x` (it's actually our secret number), and do modulo of `p` over the result. 
 
+What is actually hard about it? The incredible thing that - even if you know `g`, `p` and the result - you can't recover the secret number `x`
+
+I set up a little interactive element showing how `g^x` gets broken down by modulo operation. You can try different variable values to see how it would affect the modulo:
 <ExponentiationRemainder />
+
+You can actually notice that for some values, the part that get's divided by `p` is super big. But at the end we get take only this little green piece. In some sense that's the sauce - you can get an `x` from the `g^x` - you just divide the result by `x` in a loop
+
+But when you loose the chunk that is the key to getting the original power - you can't do it no more
+
+I'd compare it - it is easy to solve the Rubick's Cube if you rotate it only by X axis. It is easy to solve it if you rotate it only by Y axis. But try to rotate it in both and then actually torn only a piece of it - and good luck restoring the original state - that's essentially what we did here.
+
+<Callout>
+We **believe** that we can't do the reverse of this operation as easy as doing it the straight way, but we actually have no prove. See [`P = NP` problem](https://en.wikipedia.org/wiki/P_versus_NP_problem). Nonetheless we base a lot of our cryptography believing that some operations are much harder to do one way then another
+</Callout>
