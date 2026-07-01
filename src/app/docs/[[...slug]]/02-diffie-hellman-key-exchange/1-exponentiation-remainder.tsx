@@ -12,14 +12,14 @@ import {
 import { Label } from "@/components/ui/label"
 import { useMemo, useState } from "react"
 
-const DEFAULT_G = 3
-const DEFAULT_X = 2
-const DEFAULT_P = 7
 const MIN_G = 2
+const DEFAULT_G = 3
 const MAX_G = 12
 const MIN_X = 1
-const MAX_X = 8
+const DEFAULT_X = 4
+const MAX_X = 20
 const MIN_P = 2
+const DEFAULT_P = 7
 const MAX_P = 17
 const MAX_DISPLAY = 500
 
