@@ -12,45 +12,69 @@ import {
 import { Label } from "@/components/ui/label"
 import { useMemo, useState } from "react"
 
-const MODULO = 7
-const DEFAULT_BASE = 3
-const DEFAULT_EXPONENT = 2
-const MIN_BASE = 2
-const MAX_BASE = 5
-const MIN_EXPONENT = 1
-const MAX_EXPONENT = 4
+const DEFAULT_G = 3
+const DEFAULT_X = 2
+const DEFAULT_P = 7
+const MIN_G = 2
+const MAX_G = 12
+const MIN_X = 1
+const MAX_X = 8
+const MIN_P = 2
+const MAX_P = 17
+const MAX_DISPLAY = 500
 
 export function ExponentiationRemainder() {
-    const [base, setBase] = useState(DEFAULT_BASE)
-    const [exponent, setExponent] = useState(DEFAULT_EXPONENT)
+    const [g, setG] = useState(DEFAULT_G)
+    const [x, setX] = useState(DEFAULT_X)
+    const [p, setP] = useState(DEFAULT_P)
 
-    const total = useMemo(() => base ** exponent, [base, exponent])
-    const remainder = total % MODULO
-    const fullGroups = Math.floor(total / MODULO)
+    const total = useMemo(() => g ** x, [g, x])
+    const remainder = total % p
+    const fullGroups = Math.floor(total / p)
+
+    const maxRenderedGroups = Math.floor(MAX_DISPLAY / p)
+    const renderedGroups = Math.min(fullGroups, maxRenderedGroups)
+    const skippedGroups = fullGroups - renderedGroups - 1
+    const isTruncated = skippedGroups > 0
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle>How remainder is produced</CardTitle>
                 <CardDescription>
-                    See how {base}
-                    <sup>{exponent}</sup> breaks into groups of {MODULO}
+                    See how {g}
+                    <sup>{x}</sup> breaks into groups of {p}
                 </CardDescription>
             </CardHeader>
             <CardContent className="py-4">
-                <div className="flex flex-wrap gap-1.5">
-                    {Array.from({ length: fullGroups }, (_, groupIdx) => (
-                        <div key={groupIdx} className="flex gap-[0.5px]">
-                            {Array.from({ length: MODULO }, (_, i) => (
+                <div className="flex min-h-[98px] flex-wrap content-start items-center gap-1.5">
+                    {Array.from({ length: renderedGroups }, (_, groupIdx) => (
+                        <div key={groupIdx} className="flex gap-px">
+                            {Array.from({ length: p }, (_, i) => (
                                 <div
                                     key={i}
-                                    className="h-5 w-[3px] rounded-[1px] bg-fd-muted-foreground opacity-25"
+                                    className="bg-fd-muted-foreground h-5 w-[3px] rounded-[1px] opacity-25"
                                 />
                             ))}
                         </div>
                     ))}
+                    {isTruncated && (
+                        <span className="text-muted-foreground text-xs">
+                            …{skippedGroups} more…
+                        </span>
+                    )}
+                    {isTruncated && (
+                        <div className="flex gap-px">
+                            {Array.from({ length: p }, (_, i) => (
+                                <div
+                                    key={i}
+                                    className="bg-fd-muted-foreground h-5 w-[3px] rounded-[1px] opacity-25"
+                                />
+                            ))}
+                        </div>
+                    )}
                     {remainder > 0 && (
-                        <div className="flex gap-[0.5px]">
+                        <div className="flex gap-px">
                             {Array.from({ length: remainder }, (_, i) => (
                                 <div
                                     key={i}
@@ -65,46 +89,49 @@ export function ExponentiationRemainder() {
                 <div className="flex w-full flex-col gap-4 py-2 md:flex-row">
                     <div className="flex w-full flex-col items-center gap-4 md:w-2/3">
                         <Label>
-                            Base (a):{" "}
-                            <span className="font-bold tabular-nums">
-                                {base}
-                            </span>
+                            Generator (g):{" "}
+                            <span className="font-bold tabular-nums">{g}</span>
                         </Label>
                         <WideSlider
-                            defaultValue={[DEFAULT_BASE]}
-                            onValueChange={(value) => setBase(value as number)}
-                            min={MIN_BASE}
-                            max={MAX_BASE}
+                            defaultValue={[DEFAULT_G]}
+                            onValueChange={(value) => setG(value as number)}
+                            min={MIN_G}
+                            max={MAX_G}
                             step={1}
                             className="mx-auto w-full"
                         />
                         <Label>
-                            Power (b):{" "}
-                            <span className="font-bold tabular-nums">
-                                {exponent}
-                            </span>
+                            Exponent (x):{" "}
+                            <span className="font-bold tabular-nums">{x}</span>
                         </Label>
                         <WideSlider
-                            defaultValue={[DEFAULT_EXPONENT]}
-                            onValueChange={(value) =>
-                                setExponent(value as number)
-                            }
-                            min={MIN_EXPONENT}
-                            max={MAX_EXPONENT}
+                            defaultValue={[DEFAULT_X]}
+                            onValueChange={(value) => setX(value as number)}
+                            min={MIN_X}
+                            max={MAX_X}
+                            step={1}
+                            className="mx-auto w-full"
+                        />
+                        <Label>
+                            Modulus (p):{" "}
+                            <span className="font-bold tabular-nums">{p}</span>
+                        </Label>
+                        <WideSlider
+                            defaultValue={[DEFAULT_P]}
+                            onValueChange={(value) => setP(value as number)}
+                            min={MIN_P}
+                            max={MAX_P}
                             step={1}
                             className="mx-auto w-full"
                         />
                     </div>
                     <div className="flex w-full flex-col items-center justify-center gap-1 text-center md:w-1/3">
                         <span className="text-muted-foreground text-xs">
-                            {base}
-                            <sup>{exponent}</sup> mod {MODULO}
+                            {g}
+                            <sup>{x}</sup> mod {p}
                         </span>
                         <span className="text-2xl font-bold tabular-nums">
                             {remainder}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            {total} = {fullGroups} × {MODULO} + {remainder}
                         </span>
                     </div>
                 </div>
