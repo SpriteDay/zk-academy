@@ -22,24 +22,13 @@ But can you agree on a shared key over the same unprotected channel you deliver 
 
 If you send unencrypted messages over the internet - you should consider the internet space a public place. Your ISP can see whatever requests you made as it delivers them. A server that your message arrives at, is owned by some company that can secretly listen to all incoming traffic. They probably won't do that over you asking your friend "how are you doing?", but if you send your bank card details, or discuss something extremely sensitive - someone can listen it
 
-So how can we agree on something secret, doing it in a public space? We already got one ingredient of this magic - the **modulo operator**, and we need just 1 more. It will be again the one that's easy to do one way, but super hard to do the other way - it's breaking down integers into its integer factors
+So how can we agree on something secret, doing it in a public space? We already got one ingredient of this magic - the [modulo operator](/docs/01-what-remainder-remembers), and we need just 1 more
 
-## Integer factorization
+## Integers problems
 
-You can trivially multiply 13 by 7 - you get 91. Multiplication is a straight operation
+Some problems are just suck to solve in integers. For example integer factorization. You can easily figure out that 13 multiply by 7 is 91. But how can you figure out what **integers** you need to multiply to get something like 119? There are really no efficient ways of doing so, you better just try to pick different prime numbers (the most efficient thing you can do, since compound numbers are just prime numbers multiplied) until you find your luck (it was 7 * 13)
 
-The problem goes when we want to get the factors of number back. Like 119 - what its integer factors? As you remember from the [modulo chapter](/docs/01-what-remainder-remembers) discrete numbers have hard times with everything related to division. To get the integer factors of a number you really don't have anything better rather then trying to divide it by different numbers and see what sticks
-
-```
-119 / 2 = 59 (rem. 1) # nope
-119 / 3 = 39 (rem. 2) # nah
-119 / 4 = 29 (rem. 3) # still no
-119 / 5 = 23 (rem. 4) # nah-ah
-119 / 6 = 19 (rem. 5) # again no
-119 / 7 = 13 # hell yes, this is the one
-```
-
-So we figured out `119 = 7 * 13`, checking it now is trivial, but getting there? [There is actually no efficient way of doing so](https://en.wikipedia.org/wiki/Integer_factorization#:~:text=When%20the%20numbers%20are%20sufficiently%20large%2C%20no%20efficient%20non%2Dquantum%20integer%20factorization%20algorithm%20is%20known) even if you have a supercomputer. Your best bet is to really grind through it one by one, or just picking random numbers and see if it sticks
-
-<Callout>Actually - there is a type of computer that can solve this task much more efficiently - quantum computer. It can do factorization in polynomial time and once it will be established and widely used - encryption based on factorization will have very hard times.</Callout>
+<Callout>
+[RSA encryption](https://en.wikipedia.org/wiki/RSA_cryptosystem) actually based on hardness of integer factorization
+</Callout>
 
