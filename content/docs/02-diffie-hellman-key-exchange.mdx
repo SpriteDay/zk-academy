@@ -48,7 +48,7 @@ You can actually notice that for some values, `g^x` is super big. But at the end
 
 You can recover an `x` from the `g^x` - you just divide the result by `x` in a loop unless you get **1** and count how many cycles it took you. But when you loose main chunk of the result value, which is the key to getting the original power - you can't divide it in a loop no more
 
-I'd compare it to this - it's easy to solve a Rubick's Cube if you rotate it only by X axis. Similarly - it is easy to solve it if you rotate it only by Y axis. But try to rotate it in both and then actually torn it apart and try to restore it's original state - well good luck with it - and that's essentially what we did here.
+I'd compare it to this - it's easy to solve a Rubick's Cube if you rotate it only by X axis. Similarly - it is easy to solve it if you rotate it only by Y axis. But try to rotate it in both and then actually torn it apart and try to restore it's original state from a piece - well good luck with it - and that's essentially what we did here.
 
 <Callout>
 We **believe** that we can't do the reverse of this operation as easy as doing it the straight way, but we actually have no prove. See [`P = NP` problem](https://en.wikipedia.org/wiki/P_versus_NP_problem). Nonetheless we base a lot of our cryptography believing that some operations are much harder to do one way then another
