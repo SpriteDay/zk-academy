@@ -31,6 +31,14 @@ export const SVG_STROKE_TONE: Record<Tone, string> = {
     muted: "stroke-fd-muted-foreground",
 }
 
+export const SVG_RING_TONE: Record<Tone, string> = {
+    indigo: "stroke-indigo-500/45 dark:stroke-indigo-400/45",
+    amber: "stroke-amber-500/45 dark:stroke-amber-400/45",
+    rose: "stroke-rose-500/45 dark:stroke-rose-400/45",
+    emerald: "stroke-emerald-500/45 dark:stroke-emerald-400/45",
+    muted: "stroke-fd-border",
+}
+
 export const SVG_DOT_TONE: Record<Tone, string> = {
     indigo: "fill-indigo-500 dark:fill-indigo-400",
     amber: "fill-amber-500 dark:fill-amber-400",
@@ -184,7 +192,7 @@ export function Channel({ x1, x2, y }: { x1: number; x2: number; y: number }) {
                 x2={x2}
                 y2={y}
                 stroke="var(--color-fd-border)"
-                strokeWidth={10}
+                strokeWidth={13}
                 strokeLinecap="round"
             />
             <line
@@ -193,7 +201,7 @@ export function Channel({ x1, x2, y }: { x1: number; x2: number; y: number }) {
                 x2={x2}
                 y2={y}
                 stroke="var(--color-fd-background)"
-                strokeWidth={6.5}
+                strokeWidth={9}
                 strokeLinecap="round"
                 opacity={0.9}
             />
@@ -210,6 +218,7 @@ interface ChipProps {
     y: number
     text: string
     tone?: Tone
+    ring?: Tone
     className?: string
     baseOpacity?: number
     children?: ReactNode
@@ -220,6 +229,7 @@ export function Chip({
     y,
     text,
     tone = "muted",
+    ring,
     className,
     baseOpacity,
     children,
@@ -235,8 +245,10 @@ export function Chip({
                     height={22}
                     rx={11}
                     fill="var(--color-fd-card)"
-                    strokeWidth={1}
-                    className={SVG_CHIP_STROKE_TONE[tone]}
+                    strokeWidth={ring ? 1.6 : 1}
+                    className={
+                        ring ? SVG_RING_TONE[ring] : SVG_CHIP_STROKE_TONE[tone]
+                    }
                 />
                 <text
                     textAnchor="middle"
@@ -297,43 +309,100 @@ export function Tap({ x, channelY, eyeY }: TapProps) {
     )
 }
 
-const WAVE_RADII = [7, 12, 17]
-
-interface SpeakerWavesProps {
+interface PulseRingProps {
     x: number
     y: number
-    facing: "right" | "left"
-    tone: Tone
-    baseOpacity?: number
-    children?: ReactNode
+    width: number
+    height: number
+    rx?: number
+    grow?: number
+    begin: string
+    dur?: string
+    activeFraction?: number
+    repeatCount?: string
 }
 
-export function SpeakerWaves({
+export function PulseRing({
     x,
     y,
-    facing,
-    tone,
-    baseOpacity,
-    children,
-}: SpeakerWavesProps) {
-    const scale = facing === "left" ? -1 : 1
+    width,
+    height,
+    rx = 16,
+    grow = 14,
+    begin,
+    dur = "1.1s",
+    activeFraction = 1,
+    repeatCount,
+}: PulseRingProps) {
+    const keyTimes = activeFraction < 1 ? `0;${activeFraction};1` : undefined
+    const values = (from: number, to: number) =>
+        activeFraction < 1 ? `${from};${to};${to}` : `${from};${to}`
+    const timing = { begin, dur, repeatCount, keyTimes }
     return (
-        <g
-            transform={`translate(${x}, ${y}) scale(${scale}, 1)`}
-            opacity={baseOpacity}
+        <rect
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            rx={rx}
+            fill="none"
+            strokeWidth={1.5}
+            opacity={0}
+            className="stroke-rose-500 dark:stroke-rose-400"
         >
-            {WAVE_RADII.map((r) => (
-                <path
-                    key={r}
-                    d={`M ${(0.64 * r).toFixed(1)} ${(-0.77 * r).toFixed(1)} A ${r} ${r} 0 0 1 ${(0.64 * r).toFixed(1)} ${(0.77 * r).toFixed(1)}`}
-                    fill="none"
-                    strokeWidth={1.6}
-                    strokeLinecap="round"
-                    className={SVG_STROKE_TONE[tone]}
-                />
-            ))}
+            <animate
+                attributeName="x"
+                values={values(x, x - grow)}
+                {...timing}
+            />
+            <animate
+                attributeName="y"
+                values={values(y, y - grow)}
+                {...timing}
+            />
+            <animate
+                attributeName="width"
+                values={values(width, width + grow * 2)}
+                {...timing}
+            />
+            <animate
+                attributeName="height"
+                values={values(height, height + grow * 2)}
+                {...timing}
+            />
+            <animate
+                attributeName="opacity"
+                values={values(0.7, 0)}
+                {...timing}
+            />
+        </rect>
+    )
+}
+
+export function ChannelGlow({
+    x1,
+    x2,
+    y,
+    children,
+}: {
+    x1: number
+    x2: number
+    y: number
+    children?: ReactNode
+}) {
+    return (
+        <line
+            x1={x1}
+            y1={y}
+            x2={x2}
+            y2={y}
+            strokeWidth={9}
+            strokeLinecap="round"
+            opacity={children ? 0 : 0.4}
+            className="stroke-rose-400/60 dark:stroke-rose-400/50"
+        >
             {children}
-        </g>
+        </line>
     )
 }
 

@@ -15,6 +15,7 @@ import { RotateCcw } from "lucide-react"
 import { useState } from "react"
 import {
     Channel,
+    ChannelGlow,
     Chip,
     Device,
     DEVICE_WIDTH,
@@ -47,8 +48,8 @@ interface EavesdropperChallengeProps {
 }
 
 export function EavesdropperChallenge({
-    partyA = "Butch",
-    partyB = "Sundance",
+    partyA = "Judy",
+    partyB = "Nick",
 }: EavesdropperChallengeProps) {
     const [secretA, setSecretA] = useState(INITIAL_SECRET_A)
     const [secretB, setSecretB] = useState(INITIAL_SECRET_B)
@@ -93,6 +94,11 @@ export function EavesdropperChallenge({
                     aria-label={`Eavesdropper view of a Diffie-Hellman exchange between ${partyA} and ${partyB}: only public values are visible`}
                 >
                     <Channel
+                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
+                        x2={RIGHT_DEVICE_X}
+                        y={CHANNEL_Y}
+                    />
+                    <ChannelGlow
                         x1={LEFT_DEVICE_X + DEVICE_WIDTH}
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}

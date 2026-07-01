@@ -8,17 +8,18 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { KeyRound } from "lucide-react"
-import { useId } from "react"
 import {
     Channel,
+    ChannelGlow,
     Chip,
     Device,
+    DEVICE_HEIGHT,
     DEVICE_WIDTH,
     LEFT_DEVICE_X,
+    PulseRing,
     RIGHT_DEVICE_X,
     sideArcPath,
     SideArc,
-    SpeakerWaves,
     STAGE_WIDTH,
 } from "./shared/exchange-stage"
 
@@ -34,25 +35,34 @@ const RIGHT_TOP_X = RIGHT_DEVICE_X + DEVICE_WIDTH / 2
 const CIPHER_A = "9#4∆7%"
 const CIPHER_B = "3§8×5?"
 
+/**
+ * All animations share one fixed cycle so they stay phase-locked:
+ *   key travels the alley  0.8s – 3.4s
+ *   message A → B          4.3s – 6.3s
+ *   message B → A          7.0s – 9.0s
+ * The emitter box fires a single pulse as its message departs.
+ */
+const CYCLE = 12
+const PULSE_DUR = 1.2
+
+const pct = (t: number) => Number((t / CYCLE).toFixed(4))
+const kt = (...times: number[]) => times.map(pct).join(";")
+
+const cycleTiming = {
+    begin: "0s",
+    dur: `${CYCLE}s`,
+    repeatCount: "indefinite",
+} as const
+
 interface KeyExchangeMeetupProps {
     partyA?: string
     partyB?: string
 }
 
 export function KeyExchangeMeetup({
-    partyA = "Bonnie",
-    partyB = "Clyde",
+    partyA = "Jeffrey",
+    partyB = "Bill",
 }: KeyExchangeMeetupProps) {
-    const rawId = useId()
-    const id = rawId.replace(/:/g, "")
-    const keyAnimId = `key-${id}`
-    const msg1AnimId = `msg1-${id}`
-    const msg2AnimId = `msg2-${id}`
-
-    const keyBegin = `0.8s;${msg2AnimId}.end+2.6s`
-    const msg1Begin = `${keyAnimId}.end+0.9s`
-    const msg2Begin = `${msg1AnimId}.end+0.7s`
-
     const arcPath = sideArcPath(LEFT_TOP_X, ARC_Y, RIGHT_TOP_X, ARC_Y, ARC_LIFT)
     const msg1Path = `M ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y} L ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y}`
     const msg2Path = `M ${RIGHT_DEVICE_X - 18} ${CHANNEL_Y} L ${LEFT_DEVICE_X + DEVICE_WIDTH + 18} ${CHANNEL_Y}`
@@ -91,10 +101,9 @@ export function KeyExchangeMeetup({
                     >
                         <animate
                             attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.1;0.9;1"
-                            begin={keyBegin}
-                            dur="2.6s"
+                            values="0;0;1;1;0;0"
+                            keyTimes={kt(0, 0.7, 1.0, 3.2, 3.5, CYCLE)}
+                            {...cycleTiming}
                         />
                     </SideArc>
                     <text
@@ -105,83 +114,48 @@ export function KeyExchangeMeetup({
                         fontFamily="ui-sans-serif, system-ui, sans-serif"
                         className="fill-fd-muted-foreground"
                     >
-                        sharing in the private alley
+                        dark alley
                     </text>
 
-                    {/* Public channel: lights up in the speaker's color */}
+                    {/* Public channel: lights up red while a message travels */}
                     <Channel
                         x1={LEFT_DEVICE_X + DEVICE_WIDTH}
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <line
+                    <ChannelGlow
                         x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        y1={CHANNEL_Y}
                         x2={RIGHT_DEVICE_X}
-                        y2={CHANNEL_Y}
-                        strokeWidth={6.5}
-                        strokeLinecap="round"
-                        opacity={0}
-                        className="stroke-indigo-400/50 dark:stroke-indigo-400/40"
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.12;0.88;1"
-                            begin={msg1Begin}
-                            dur="2s"
-                        />
-                    </line>
-                    <line
-                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        y1={CHANNEL_Y}
-                        x2={RIGHT_DEVICE_X}
-                        y2={CHANNEL_Y}
-                        strokeWidth={6.5}
-                        strokeLinecap="round"
-                        opacity={0}
-                        className="stroke-amber-400/50 dark:stroke-amber-400/40"
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.12;0.88;1"
-                            begin={msg2Begin}
-                            dur="2s"
-                        />
-                    </line>
-
-                    {/* Speaking out loud */}
-                    <SpeakerWaves
-                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
                         y={CHANNEL_Y}
-                        facing="right"
-                        tone="indigo"
-                        baseOpacity={0}
                     >
                         <animate
                             attributeName="opacity"
-                            values="0;0.9;0.9;0"
-                            keyTimes="0;0.12;0.88;1"
-                            begin={msg1Begin}
-                            dur="2s"
+                            values="0;0;1;1;0;0;1;1;0;0"
+                            keyTimes={kt(
+                                0,
+                                4.2,
+                                4.5,
+                                6.1,
+                                6.4,
+                                6.9,
+                                7.2,
+                                8.8,
+                                9.1,
+                                CYCLE,
+                            )}
+                            {...cycleTiming}
                         />
-                    </SpeakerWaves>
-                    <SpeakerWaves
-                        x={RIGHT_DEVICE_X - 10}
-                        y={CHANNEL_Y}
-                        facing="left"
-                        tone="amber"
-                        baseOpacity={0}
+                    </ChannelGlow>
+                    <text
+                        x={STAGE_WIDTH / 2}
+                        y={CHANNEL_Y + 24}
+                        textAnchor="middle"
+                        fontSize={9.5}
+                        fontFamily="ui-sans-serif, system-ui, sans-serif"
+                        className="fill-fd-muted-foreground"
                     >
-                        <animate
-                            attributeName="opacity"
-                            values="0;0.9;0.9;0"
-                            keyTimes="0;0.12;0.88;1"
-                            begin={msg2Begin}
-                            dur="2s"
-                        />
-                    </SpeakerWaves>
+                        public channel
+                    </text>
 
                     <Device
                         x={LEFT_DEVICE_X}
@@ -196,6 +170,28 @@ export function KeyExchangeMeetup({
                         name={partyB}
                         tone="amber"
                         hiddenRows={3}
+                    />
+
+                    {/* Emitter box fires a single pulse as its message departs */}
+                    <PulseRing
+                        x={LEFT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="4.3s"
+                        dur={`${CYCLE}s`}
+                        activeFraction={pct(PULSE_DUR)}
+                        repeatCount="indefinite"
+                    />
+                    <PulseRing
+                        x={RIGHT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="7s"
+                        dur={`${CYCLE}s`}
+                        activeFraction={pct(PULSE_DUR)}
+                        repeatCount="indefinite"
                     />
 
                     {/* Secret key traveling the private side channel */}
@@ -213,52 +209,49 @@ export function KeyExchangeMeetup({
                             className="text-white"
                         />
                         <animateMotion
-                            id={keyAnimId}
-                            begin={keyBegin}
-                            dur="2.6s"
                             path={arcPath}
-                            calcMode="spline"
-                            keySplines="0.4 0 0.6 1"
-                            keyTimes="0;1"
+                            calcMode="linear"
+                            keyPoints="0;0;1;1"
+                            keyTimes={kt(0, 0.8, 3.4, CYCLE)}
+                            {...cycleTiming}
                         />
                         <animate
                             attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.07;0.93;1"
-                            begin={keyBegin}
-                            dur="2.6s"
+                            values="0;0;1;1;0;0"
+                            keyTimes={kt(0, 0.8, 0.95, 3.25, 3.4, CYCLE)}
+                            {...cycleTiming}
                         />
                     </g>
 
                     {/* Encrypted messages over the public channel */}
                     <Chip x={0} y={0} text={CIPHER_A} baseOpacity={0}>
                         <animateMotion
-                            id={msg1AnimId}
-                            begin={msg1Begin}
-                            dur="2s"
                             path={msg1Path}
+                            calcMode="linear"
+                            keyPoints="0;0;1;1"
+                            keyTimes={kt(0, 4.3, 6.3, CYCLE)}
+                            {...cycleTiming}
                         />
                         <animate
                             attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.07;0.93;1"
-                            begin={msg1Begin}
-                            dur="2s"
+                            values="0;0;1;1;0;0"
+                            keyTimes={kt(0, 4.3, 4.45, 6.15, 6.3, CYCLE)}
+                            {...cycleTiming}
                         />
                     </Chip>
                     <Chip x={0} y={0} text={CIPHER_B} baseOpacity={0}>
                         <animateMotion
-                            id={msg2AnimId}
-                            begin={msg2Begin}
-                            dur="2s"
                             path={msg2Path}
+                            calcMode="linear"
+                            keyPoints="0;0;1;1"
+                            keyTimes={kt(0, 7.0, 9.0, CYCLE)}
+                            {...cycleTiming}
                         />
                         <animate
                             attributeName="opacity"
-                            values="0;1;1;0"
-                            keyTimes="0;0.07;0.93;1"
-                            begin={msg2Begin}
-                            dur="2s"
+                            values="0;0;1;1;0;0"
+                            keyTimes={kt(0, 7.0, 7.15, 8.85, 9.0, CYCLE)}
+                            {...cycleTiming}
                         />
                     </Chip>
                 </svg>

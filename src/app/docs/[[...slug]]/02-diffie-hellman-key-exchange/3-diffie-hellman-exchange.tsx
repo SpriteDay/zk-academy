@@ -13,13 +13,15 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import {
     Channel,
+    ChannelGlow,
     Chip,
     Device,
+    DEVICE_HEIGHT,
     DEVICE_WIDTH,
     HTML_TEXT_TONE,
     LEFT_DEVICE_X,
+    PulseRing,
     RIGHT_DEVICE_X,
-    SpeakerWaves,
     STAGE_WIDTH,
 } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
@@ -40,8 +42,8 @@ interface DiffieHellmanExchangeProps {
 }
 
 export function DiffieHellmanExchange({
-    partyA = "Ronnie",
-    partyB = "Reggie",
+    partyA = "Bonnie",
+    partyB = "Clyde",
 }: DiffieHellmanExchangeProps) {
     const [g, setG] = useState(DEFAULT_G)
     const [p, setP] = useState(DEFAULT_P)
@@ -73,35 +75,31 @@ export function DiffieHellmanExchange({
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <SpeakerWaves
-                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
+                    <ChannelGlow
+                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
+                        x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
-                        facing="right"
-                        tone="indigo"
-                        baseOpacity={0.4}
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0.3;0.8;0.3"
-                            dur="3s"
-                            repeatCount="indefinite"
-                        />
-                    </SpeakerWaves>
-                    <SpeakerWaves
-                        x={RIGHT_DEVICE_X - 10}
-                        y={CHANNEL_Y}
-                        facing="left"
-                        tone="amber"
-                        baseOpacity={0.4}
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0.3;0.8;0.3"
-                            dur="3s"
-                            begin="1.5s"
-                            repeatCount="indefinite"
-                        />
-                    </SpeakerWaves>
+                    />
+                    <PulseRing
+                        x={LEFT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="0s"
+                        dur="3.2s"
+                        activeFraction={0.35}
+                        repeatCount="indefinite"
+                    />
+                    <PulseRing
+                        x={RIGHT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="1.6s"
+                        dur="3.2s"
+                        activeFraction={0.35}
+                        repeatCount="indefinite"
+                    />
 
                     <Chip
                         x={CENTER_X - 37}

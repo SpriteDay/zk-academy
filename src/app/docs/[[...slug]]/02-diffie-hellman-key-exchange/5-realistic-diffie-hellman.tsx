@@ -13,13 +13,15 @@ import { Dices } from "lucide-react"
 import { useMemo, useState } from "react"
 import {
     Channel,
+    ChannelGlow,
     Chip,
     Device,
+    DEVICE_HEIGHT,
     DEVICE_WIDTH,
     HTML_TEXT_TONE,
     LEFT_DEVICE_X,
+    PulseRing,
     RIGHT_DEVICE_X,
-    SpeakerWaves,
     STAGE_WIDTH,
 } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
@@ -72,7 +74,7 @@ interface RealisticDiffieHellmanProps {
 }
 
 export function RealisticDiffieHellman({
-    partyA = "Frank",
+    partyA = "Walter",
     partyB = "Jesse",
 }: RealisticDiffieHellmanProps) {
     const [secretA, setSecretA] = useState(DEFAULT_SECRET_A)
@@ -113,35 +115,31 @@ export function RealisticDiffieHellman({
                         x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
                     />
-                    <SpeakerWaves
-                        x={LEFT_DEVICE_X + DEVICE_WIDTH + 10}
+                    <ChannelGlow
+                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
+                        x2={RIGHT_DEVICE_X}
                         y={CHANNEL_Y}
-                        facing="right"
-                        tone="indigo"
-                        baseOpacity={0.4}
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0.3;0.8;0.3"
-                            dur="3s"
-                            repeatCount="indefinite"
-                        />
-                    </SpeakerWaves>
-                    <SpeakerWaves
-                        x={RIGHT_DEVICE_X - 10}
-                        y={CHANNEL_Y}
-                        facing="left"
-                        tone="amber"
-                        baseOpacity={0.4}
-                    >
-                        <animate
-                            attributeName="opacity"
-                            values="0.3;0.8;0.3"
-                            dur="3s"
-                            begin="1.5s"
-                            repeatCount="indefinite"
-                        />
-                    </SpeakerWaves>
+                    />
+                    <PulseRing
+                        x={LEFT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="0s"
+                        dur="3.2s"
+                        activeFraction={0.35}
+                        repeatCount="indefinite"
+                    />
+                    <PulseRing
+                        x={RIGHT_DEVICE_X}
+                        y={DEVICE_Y}
+                        width={DEVICE_WIDTH}
+                        height={DEVICE_HEIGHT}
+                        begin="1.6s"
+                        dur="3.2s"
+                        activeFraction={0.35}
+                        repeatCount="indefinite"
+                    />
 
                     <Chip
                         x={CENTER_X - 52}
@@ -194,7 +192,7 @@ export function RealisticDiffieHellman({
                     <Chip
                         key={`a-${publicA}`}
                         x={CENTER_X - 30}
-                        y={CHANNEL_Y - 16}
+                        y={CHANNEL_Y - 19}
                         text={`A = ${hexShort(publicA, 6, 4)}`}
                         tone="rose"
                         className="animate-in fade-in slide-in-from-left-8 duration-500"
@@ -202,7 +200,7 @@ export function RealisticDiffieHellman({
                     <Chip
                         key={`b-${publicB}`}
                         x={CENTER_X + 30}
-                        y={CHANNEL_Y + 16}
+                        y={CHANNEL_Y + 19}
                         text={`B = ${hexShort(publicB, 6, 4)}`}
                         tone="rose"
                         className="animate-in fade-in slide-in-from-right-8 duration-500"
