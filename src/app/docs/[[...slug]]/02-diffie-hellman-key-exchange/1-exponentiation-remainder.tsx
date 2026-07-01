@@ -174,7 +174,7 @@ export function ExponentiationRemainder() {
                                 {" mod "}
                                 <span className={P_COLOR}>{p}</span>
                             </span>
-                            <span className="text-3xl font-bold text-emerald-500 tabular-nums">
+                            <span className="text-3xl font-bold text-emerald-600 tabular-nums dark:text-emerald-500">
                                 {remainder}
                             </span>
                         </div>
