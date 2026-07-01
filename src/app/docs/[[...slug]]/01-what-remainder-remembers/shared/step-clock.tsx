@@ -38,9 +38,7 @@ export function StepClock({
 }: StepClockProps) {
     const [inputValue, setInputValue] = useState(defaultSteps)
     const [valuePerStep, setValuePerStep] = useState(defaultValuePerStep)
-    const [seenValues, setSeenValues] = useState<Set<number>>(
-        () => new Set(),
-    )
+    const [seenValues, setSeenValues] = useState<Set<number>>(() => new Set())
 
     const multipliedValue = useMemo(
         () => inputValue * valuePerStep,
@@ -56,13 +54,10 @@ export function StepClock({
         [seenValues],
     )
 
-    const handleValuePerStepChange = useCallback(
-        (newValuePerStep: number) => {
-            setValuePerStep(newValuePerStep)
-            setSeenValues(new Set())
-        },
-        [],
-    )
+    const handleValuePerStepChange = useCallback((newValuePerStep: number) => {
+        setValuePerStep(newValuePerStep)
+        setSeenValues(new Set())
+    }, [])
 
     const handleStepsChange = useCallback(
         (newSteps: number) => {

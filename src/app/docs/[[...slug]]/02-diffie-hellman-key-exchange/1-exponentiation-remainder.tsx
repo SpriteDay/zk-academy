@@ -72,9 +72,7 @@ export function ExponentiationRemainder() {
                         </Label>
                         <WideSlider
                             defaultValue={[DEFAULT_BASE]}
-                            onValueChange={(value) =>
-                                setBase(value as number)
-                            }
+                            onValueChange={(value) => setBase(value as number)}
                             min={MIN_BASE}
                             max={MAX_BASE}
                             step={1}
