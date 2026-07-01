@@ -10,31 +10,71 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useState } from "react"
-import {
-    Channel,
-    ChannelGlow,
-    Chip,
-    Device,
-    DEVICE_HEIGHT,
-    DEVICE_WIDTH,
-    HTML_TEXT_TONE,
-    LEFT_DEVICE_X,
-    PulseRing,
-    RIGHT_DEVICE_X,
-    STAGE_WIDTH,
-} from "./shared/exchange-stage"
+import { useState, type ReactNode } from "react"
+import { HTML_TEXT_TONE, type Tone } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
-
-const STAGE_HEIGHT = 170
-const DEVICE_Y = 36
-const CHANNEL_Y = DEVICE_Y + 59
-const CENTER_X = STAGE_WIDTH / 2
+import {
+    ExchangeScene,
+    StagePanel,
+    StageStepper,
+} from "./shared/staged-exchange"
 
 const DEFAULT_G = 5
 const DEFAULT_P = 23
 const DEFAULT_A = 6
 const DEFAULT_B = 15
+
+const STEP_LABELS = [
+    "Public numbers",
+    "Private secrets",
+    "Mix and send",
+    "Shared key",
+]
+
+function SliderControl({
+    label,
+    symbol,
+    tone,
+    value,
+    defaultValue,
+    min,
+    max,
+    onChange,
+}: {
+    label: ReactNode
+    symbol: string
+    tone: Tone
+    value: number
+    defaultValue: number
+    min: number
+    max: number
+    onChange: (value: number) => void
+}) {
+    return (
+        <div className="flex w-full flex-col items-center gap-4 md:w-1/2">
+            <Label>
+                <span>
+                    {label} (
+                    <span className={HTML_TEXT_TONE[tone]}>{symbol}</span>
+                    ):{" "}
+                    <span
+                        className={`font-bold tabular-nums ${HTML_TEXT_TONE[tone]}`}
+                    >
+                        {value}
+                    </span>
+                </span>
+            </Label>
+            <WideSlider
+                defaultValue={[defaultValue]}
+                onValueChange={(v) => onChange(v as number)}
+                min={min}
+                max={max}
+                step={1}
+                className="mx-auto w-full"
+            />
+        </div>
+    )
+}
 
 interface DiffieHellmanExchangeProps {
     partyA?: string
@@ -49,217 +89,174 @@ export function DiffieHellmanExchange({
     const [p, setP] = useState(DEFAULT_P)
     const [a, setA] = useState(DEFAULT_A)
     const [b, setB] = useState(DEFAULT_B)
+    const [step, setStep] = useState(0)
+    const [replays, setReplays] = useState(0)
 
     const publicA = Number(modPow(BigInt(g), BigInt(a), BigInt(p)))
     const publicB = Number(modPow(BigInt(g), BigInt(b), BigInt(p)))
-    const keyA = Number(modPow(BigInt(publicB), BigInt(a), BigInt(p)))
-    const keyB = Number(modPow(BigInt(publicA), BigInt(b), BigInt(p)))
+    const sharedKey = Number(modPow(BigInt(publicB), BigInt(a), BigInt(p)))
+
+    const titles = [
+        "Agree on public numbers",
+        "Pick private secrets",
+        "Mix, then swap in public",
+        "Arrive at the same key",
+    ]
+
+    const descriptions: ReactNode[] = [
+        <p key="0">
+            {partyA} and {partyB} agree on a generator{" "}
+            <span className={HTML_TEXT_TONE.rose}>g</span> and a modulus{" "}
+            <span className={HTML_TEXT_TONE.rose}>p</span> — right over the open
+            wire. Anyone listening learns both, and that is fine: these are
+            meant to be public.
+        </p>,
+        <p key="1">
+            Each of them rolls a number and keeps it to themselves.{" "}
+            <span className={HTML_TEXT_TONE.indigo}>a</span> never leaves{" "}
+            {partyA}&apos;s device,{" "}
+            <span className={HTML_TEXT_TONE.amber}>b</span> never leaves{" "}
+            {partyB}&apos;s. The wire stays silent.
+        </p>,
+        <div key="2" className="space-y-1.5">
+            <p>
+                Each device mixes its secret into the public numbers and sends
+                only the result. Undoing the mix is the hard problem from above.
+            </p>
+            <div className="space-y-0.5 font-mono text-xs">
+                <div>
+                    <span className={HTML_TEXT_TONE.indigo}>A</span> = g
+                    <sup>a</sup> mod p = {g}
+                    <sup className={HTML_TEXT_TONE.indigo}>{a}</sup> mod {p} ={" "}
+                    <span className="font-bold">{publicA}</span>
+                </div>
+                <div>
+                    <span className={HTML_TEXT_TONE.amber}>B</span> = g
+                    <sup>b</sup> mod p = {g}
+                    <sup className={HTML_TEXT_TONE.amber}>{b}</sup> mod {p} ={" "}
+                    <span className="font-bold">{publicB}</span>
+                </div>
+            </div>
+        </div>,
+        <div key="3" className="space-y-1.5">
+            <p>
+                Each raises the mix they received to their own secret. Both land
+                on the same number — computed on each device, never sent:
+            </p>
+            <div className="space-y-0.5 font-mono text-xs">
+                <div>
+                    {partyA}: B<sup className={HTML_TEXT_TONE.indigo}>a</sup>{" "}
+                    mod p = {publicB}
+                    <sup className={HTML_TEXT_TONE.indigo}>{a}</sup> mod {p} ={" "}
+                    <span className={`font-bold ${HTML_TEXT_TONE.emerald}`}>
+                        {sharedKey}
+                    </span>
+                </div>
+                <div>
+                    {partyB}: A<sup className={HTML_TEXT_TONE.amber}>b</sup> mod
+                    p = {publicA}
+                    <sup className={HTML_TEXT_TONE.amber}>{b}</sup> mod {p} ={" "}
+                    <span className={`font-bold ${HTML_TEXT_TONE.emerald}`}>
+                        {sharedKey}
+                    </span>
+                </div>
+            </div>
+            <p>
+                It works because (g<sup>a</sup>)<sup>b</sup> and (g
+                <sup>b</sup>)<sup>a</sup> are both g<sup>ab</sup>.
+            </p>
+        </div>,
+    ]
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Mixing secrets in the open</CardTitle>
                 <CardDescription>
-                    No side channel anymore — everything travels in public
+                    No side channel anymore — step through the exchange
                 </CardDescription>
             </CardHeader>
             <CardContent className="py-2">
-                <svg
-                    viewBox={`0 0 ${STAGE_WIDTH} ${STAGE_HEIGHT}`}
-                    className="mx-auto block w-full max-w-xl"
-                    role="img"
-                    aria-label={`Diffie-Hellman exchange: ${partyA} and ${partyB} derive the same shared key over a public channel`}
-                >
-                    <Channel
-                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        x2={RIGHT_DEVICE_X}
-                        y={CHANNEL_Y}
+                <div className="flex flex-col items-center gap-3 md:flex-row md:gap-2">
+                    <ExchangeScene
+                        step={step}
+                        playKey={`${step}-${replays}-${g}-${p}-${a}-${b}`}
+                        partyA={partyA}
+                        partyB={partyB}
+                        ariaLabel={`Diffie-Hellman exchange, step ${step + 1} of 4: ${partyA} and ${partyB} derive the same shared key over a public channel`}
+                        gChip={`g = ${g}`}
+                        pChip={`p = ${p}`}
+                        secretA={`a = ${a}`}
+                        secretB={`b = ${b}`}
+                        mixA={`A = ${publicA}`}
+                        mixB={`B = ${publicB}`}
+                        keyText={`K = ${sharedKey}`}
+                        keyChip={`K = ${sharedKey} — never sent`}
                     />
-                    <ChannelGlow
-                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        x2={RIGHT_DEVICE_X}
-                        y={CHANNEL_Y}
+                    <StageStepper
+                        labels={STEP_LABELS}
+                        step={step}
+                        onStepChange={setStep}
                     />
-                    <PulseRing
-                        x={LEFT_DEVICE_X}
-                        y={DEVICE_Y}
-                        width={DEVICE_WIDTH}
-                        height={DEVICE_HEIGHT}
-                        begin="0s"
-                        dur="3.2s"
-                        activeFraction={0.35}
-                        repeatCount="indefinite"
-                    />
-                    <PulseRing
-                        x={RIGHT_DEVICE_X}
-                        y={DEVICE_Y}
-                        width={DEVICE_WIDTH}
-                        height={DEVICE_HEIGHT}
-                        begin="1.6s"
-                        dur="3.2s"
-                        activeFraction={0.35}
-                        repeatCount="indefinite"
-                    />
-
-                    <Chip
-                        x={CENTER_X - 37}
-                        y={CHANNEL_Y - 33}
-                        text={`g = ${g}`}
-                        tone="rose"
-                    />
-                    <Chip
-                        x={CENTER_X + 37}
-                        y={CHANNEL_Y - 33}
-                        text={`p = ${p}`}
-                        tone="rose"
-                    />
-
-                    <Device
-                        x={LEFT_DEVICE_X}
-                        y={DEVICE_Y}
-                        name={partyA}
-                        tone="indigo"
-                        lines={[
-                            { text: `secret a = ${a}`, tone: "indigo" },
-                            { text: `sends A = ${publicA}` },
-                            { text: `gets B = ${publicB}` },
-                            { text: `key K = ${keyA}`, tone: "emerald" },
-                        ]}
-                    />
-                    <Device
-                        x={RIGHT_DEVICE_X}
-                        y={DEVICE_Y}
-                        name={partyB}
-                        tone="amber"
-                        lines={[
-                            { text: `secret b = ${b}`, tone: "amber" },
-                            { text: `sends B = ${publicB}` },
-                            { text: `gets A = ${publicA}` },
-                            { text: `key K = ${keyB}`, tone: "emerald" },
-                        ]}
-                    />
-
-                    <Chip
-                        key={`a-${publicA}-${p}`}
-                        x={CENTER_X - 48}
-                        y={CHANNEL_Y}
-                        text={`A = ${publicA} →`}
-                        tone="rose"
-                        className="animate-in fade-in slide-in-from-left-8 duration-500"
-                    />
-                    <Chip
-                        key={`b-${publicB}-${p}`}
-                        x={CENTER_X + 48}
-                        y={CHANNEL_Y}
-                        text={`← B = ${publicB}`}
-                        tone="rose"
-                        className="animate-in fade-in slide-in-from-right-8 duration-500"
-                    />
-                </svg>
-            </CardContent>
-            <CardFooter className="flex-col items-start gap-4 text-sm">
-                <div className="flex w-full flex-col gap-4 py-2">
-                    <div className="flex w-full flex-col gap-4 md:flex-row">
-                        <div className="flex w-full flex-col items-center gap-4 md:w-1/2">
-                            <Label>
-                                <span>
-                                    Public generator (
-                                    <span className={HTML_TEXT_TONE.rose}>
-                                        g
-                                    </span>
-                                    ):{" "}
-                                    <span
-                                        className={`font-bold tabular-nums ${HTML_TEXT_TONE.rose}`}
-                                    >
-                                        {g}
-                                    </span>
-                                </span>
-                            </Label>
-                            <WideSlider
-                                defaultValue={[DEFAULT_G]}
-                                onValueChange={(value) => setG(value as number)}
-                                min={2}
-                                max={12}
-                                step={1}
-                                className="mx-auto w-full"
-                            />
-                        </div>
-                        <div className="flex w-full flex-col items-center gap-4 md:w-1/2">
-                            <Label>
-                                <span>
-                                    Public modulus (
-                                    <span className={HTML_TEXT_TONE.rose}>
-                                        p
-                                    </span>
-                                    ):{" "}
-                                    <span
-                                        className={`font-bold tabular-nums ${HTML_TEXT_TONE.rose}`}
-                                    >
-                                        {p}
-                                    </span>
-                                </span>
-                            </Label>
-                            <WideSlider
-                                defaultValue={[DEFAULT_P]}
-                                onValueChange={(value) => setP(value as number)}
-                                min={2}
-                                max={30}
-                                step={1}
-                                className="mx-auto w-full"
-                            />
-                        </div>
-                    </div>
-                    <div className="flex w-full flex-col gap-4 md:flex-row">
-                        <div className="flex w-full flex-col items-center gap-4 md:w-1/2">
-                            <Label>
-                                <span>
-                                    {partyA}&apos;s secret (
-                                    <span className={HTML_TEXT_TONE.indigo}>
-                                        a
-                                    </span>
-                                    ):{" "}
-                                    <span
-                                        className={`font-bold tabular-nums ${HTML_TEXT_TONE.indigo}`}
-                                    >
-                                        {a}
-                                    </span>
-                                </span>
-                            </Label>
-                            <WideSlider
-                                defaultValue={[DEFAULT_A]}
-                                onValueChange={(value) => setA(value as number)}
-                                min={1}
-                                max={24}
-                                step={1}
-                                className="mx-auto w-full"
-                            />
-                        </div>
-                        <div className="flex w-full flex-col items-center gap-4 md:w-1/2">
-                            <Label>
-                                <span>
-                                    {partyB}&apos;s secret (
-                                    <span className={HTML_TEXT_TONE.amber}>
-                                        b
-                                    </span>
-                                    ):{" "}
-                                    <span
-                                        className={`font-bold tabular-nums ${HTML_TEXT_TONE.amber}`}
-                                    >
-                                        {b}
-                                    </span>
-                                </span>
-                            </Label>
-                            <WideSlider
-                                defaultValue={[DEFAULT_B]}
-                                onValueChange={(value) => setB(value as number)}
-                                min={1}
-                                max={24}
-                                step={1}
-                                className="mx-auto w-full"
-                            />
-                        </div>
-                    </div>
                 </div>
+            </CardContent>
+            <CardFooter className="flex-col items-stretch gap-3 text-sm">
+                <StagePanel
+                    step={step}
+                    title={titles[step]}
+                    onStepChange={setStep}
+                    onReplay={() => setReplays((n) => n + 1)}
+                >
+                    {descriptions[step]}
+                </StagePanel>
+                {step === 0 && (
+                    <div className="flex w-full flex-col gap-4 md:flex-row">
+                        <SliderControl
+                            label="Public generator"
+                            symbol="g"
+                            tone="rose"
+                            value={g}
+                            defaultValue={DEFAULT_G}
+                            min={2}
+                            max={12}
+                            onChange={setG}
+                        />
+                        <SliderControl
+                            label="Public modulus"
+                            symbol="p"
+                            tone="rose"
+                            value={p}
+                            defaultValue={DEFAULT_P}
+                            min={2}
+                            max={30}
+                            onChange={setP}
+                        />
+                    </div>
+                )}
+                {step === 1 && (
+                    <div className="flex w-full flex-col gap-4 md:flex-row">
+                        <SliderControl
+                            label={`${partyA}'s secret`}
+                            symbol="a"
+                            tone="indigo"
+                            value={a}
+                            defaultValue={DEFAULT_A}
+                            min={1}
+                            max={24}
+                            onChange={setA}
+                        />
+                        <SliderControl
+                            label={`${partyB}'s secret`}
+                            symbol="b"
+                            tone="amber"
+                            value={b}
+                            defaultValue={DEFAULT_B}
+                            min={1}
+                            max={24}
+                            onChange={setB}
+                        />
+                    </div>
+                )}
             </CardFooter>
         </Card>
     )

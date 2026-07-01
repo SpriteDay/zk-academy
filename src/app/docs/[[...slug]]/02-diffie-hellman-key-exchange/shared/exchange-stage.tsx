@@ -1,7 +1,7 @@
 "use client"
 
 import { Eye } from "lucide-react"
-import { useId, type ReactNode } from "react"
+import { useId, type CSSProperties, type ReactNode } from "react"
 
 export type Tone = "indigo" | "amber" | "rose" | "emerald" | "muted"
 
@@ -64,6 +64,7 @@ export const RIGHT_DEVICE_X = STAGE_WIDTH - 28 - DEVICE_WIDTH
 export interface ScreenLine {
     text: string
     tone?: Tone
+    style?: CSSProperties
 }
 
 interface DeviceProps {
@@ -164,6 +165,7 @@ export function Device({
                     fontSize={9.5}
                     fontFamily={MONO_FONT}
                     className={SVG_TEXT_TONE[line.tone ?? "muted"]}
+                    style={line.style}
                 >
                     {line.text}
                 </text>
@@ -220,6 +222,7 @@ interface ChipProps {
     tone?: Tone
     ring?: Tone
     className?: string
+    style?: CSSProperties
     baseOpacity?: number
     children?: ReactNode
 }
@@ -231,13 +234,14 @@ export function Chip({
     tone = "muted",
     ring,
     className,
+    style,
     baseOpacity,
     children,
 }: ChipProps) {
     const width = chipWidth(text)
     return (
         <g transform={`translate(${x}, ${y})`}>
-            <g className={className} opacity={baseOpacity}>
+            <g className={className} style={style} opacity={baseOpacity}>
                 <rect
                     x={-width / 2}
                     y={-11}

@@ -10,26 +10,14 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Dices } from "lucide-react"
-import { useMemo, useState } from "react"
-import {
-    Channel,
-    ChannelGlow,
-    Chip,
-    Device,
-    DEVICE_HEIGHT,
-    DEVICE_WIDTH,
-    HTML_TEXT_TONE,
-    LEFT_DEVICE_X,
-    PulseRing,
-    RIGHT_DEVICE_X,
-    STAGE_WIDTH,
-} from "./shared/exchange-stage"
+import { useMemo, useState, type ReactNode } from "react"
+import { HTML_TEXT_TONE } from "./shared/exchange-stage"
 import { modPow } from "./shared/mod-math"
-
-const STAGE_HEIGHT = 170
-const DEVICE_Y = 36
-const CHANNEL_Y = DEVICE_Y + 59
-const CENTER_X = STAGE_WIDTH / 2
+import {
+    ExchangeScene,
+    StagePanel,
+    StageStepper,
+} from "./shared/staged-exchange"
 
 // RFC 3526, group 14: 2048-bit MODP safe prime
 const P = BigInt(
@@ -51,6 +39,13 @@ const DEFAULT_SECRET_A = BigInt(
 const DEFAULT_SECRET_B = BigInt(
     "0x9d24c6f1a7e08b3552c9f4d0e6a1b78c3e5d92f04a6b1c8d7e30f9a25b4c6d1e",
 )
+
+const STEP_LABELS = [
+    "Public numbers",
+    "Private secrets",
+    "Mix and send",
+    "Shared key",
+]
 
 function randomSecret(): bigint {
     const bytes = new Uint8Array(32)
@@ -79,6 +74,8 @@ export function RealisticDiffieHellman({
 }: RealisticDiffieHellmanProps) {
     const [secretA, setSecretA] = useState(DEFAULT_SECRET_A)
     const [secretB, setSecretB] = useState(DEFAULT_SECRET_B)
+    const [step, setStep] = useState(0)
+    const [replays, setReplays] = useState(0)
 
     const { publicA, publicB, sharedKey } = useMemo(() => {
         const A = modPow(G, secretA, P)
@@ -95,6 +92,39 @@ export function RealisticDiffieHellman({
         setSecretB(randomSecret())
     }
 
+    const titles = [
+        "Standardized public numbers",
+        "Secrets too big to guess",
+        "Same mixing, giant numbers",
+        "A key nobody else can compute",
+    ]
+
+    const descriptions: ReactNode[] = [
+        <p key="0">
+            In practice nobody picks{" "}
+            <span className={HTML_TEXT_TONE.rose}>g</span> and{" "}
+            <span className={HTML_TEXT_TONE.rose}>p</span> by hand — protocols
+            ship standardized groups. This one is RFC 3526 group 14: g = 2 and a
+            2048-bit prime p, {pDigits} digits long.
+        </p>,
+        <p key="1">
+            Each device rolls 256 random bits — a number around {secretDigits}{" "}
+            digits. The space of possible secrets is so large that trying them
+            one by one is hopeless.
+        </p>,
+        <p key="2">
+            Exactly the dance you just stepped through, at full size: A = g
+            <sup>a</sup> mod p. Even holding A, g and p, no computer on Earth
+            digs the secret back out of a number like this.
+        </p>,
+        <p key="3">
+            Both devices land on the same {keyDigits}-digit{" "}
+            <span className={HTML_TEXT_TONE.emerald}>K</span> without it ever
+            touching the wire. This is essentially what your browser did to open
+            a secure channel before this page even loaded.
+        </p>,
+    ]
+
     return (
         <Card>
             <CardHeader>
@@ -104,112 +134,40 @@ export function RealisticDiffieHellman({
                 </CardDescription>
             </CardHeader>
             <CardContent className="py-2">
-                <svg
-                    viewBox={`0 0 ${STAGE_WIDTH} ${STAGE_HEIGHT}`}
-                    className="mx-auto block w-full max-w-xl"
-                    role="img"
-                    aria-label={`Realistic Diffie-Hellman exchange between ${partyA} and ${partyB} with a 2048-bit prime modulus`}
-                >
-                    <Channel
-                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        x2={RIGHT_DEVICE_X}
-                        y={CHANNEL_Y}
+                <div className="flex flex-col items-center gap-3 md:flex-row md:gap-2">
+                    <ExchangeScene
+                        step={step}
+                        playKey={`${step}-${replays}-${secretA.toString(16).slice(0, 12)}`}
+                        partyA={partyA}
+                        partyB={partyB}
+                        ariaLabel={`Realistic Diffie-Hellman exchange, step ${step + 1} of 4: ${partyA} and ${partyB} with a 2048-bit prime modulus`}
+                        gChip="g = 2"
+                        pChip={`p = ${pDigits} digits`}
+                        secretA={`a = ${hexShort(secretA, 4, 4)}`}
+                        secretB={`b = ${hexShort(secretB, 4, 4)}`}
+                        mixA={`A = ${hexShort(publicA, 4, 4)}`}
+                        mixB={`B = ${hexShort(publicB, 4, 4)}`}
+                        keyText={`K = ${hexShort(sharedKey, 4, 4)}`}
+                        keyChip={`K = ${hexShort(sharedKey, 4, 4)} — never sent`}
                     />
-                    <ChannelGlow
-                        x1={LEFT_DEVICE_X + DEVICE_WIDTH}
-                        x2={RIGHT_DEVICE_X}
-                        y={CHANNEL_Y}
+                    <StageStepper
+                        labels={STEP_LABELS}
+                        step={step}
+                        onStepChange={setStep}
                     />
-                    <PulseRing
-                        x={LEFT_DEVICE_X}
-                        y={DEVICE_Y}
-                        width={DEVICE_WIDTH}
-                        height={DEVICE_HEIGHT}
-                        begin="0s"
-                        dur="3.2s"
-                        activeFraction={0.35}
-                        repeatCount="indefinite"
-                    />
-                    <PulseRing
-                        x={RIGHT_DEVICE_X}
-                        y={DEVICE_Y}
-                        width={DEVICE_WIDTH}
-                        height={DEVICE_HEIGHT}
-                        begin="1.6s"
-                        dur="3.2s"
-                        activeFraction={0.35}
-                        repeatCount="indefinite"
-                    />
-
-                    <Chip
-                        x={CENTER_X - 52}
-                        y={CHANNEL_Y - 44}
-                        text={`g = 2`}
-                        tone="rose"
-                    />
-                    <Chip
-                        x={CENTER_X + 42}
-                        y={CHANNEL_Y - 44}
-                        text={`p = ${pDigits} digits`}
-                        tone="rose"
-                    />
-
-                    <Device
-                        x={LEFT_DEVICE_X}
-                        y={DEVICE_Y}
-                        name={partyA}
-                        tone="indigo"
-                        lines={[
-                            {
-                                text: `a = ${hexShort(secretA, 6, 4)}`,
-                                tone: "indigo",
-                            },
-                            { text: `A = ${hexShort(publicA, 6, 4)}` },
-                            {
-                                text: `K = ${hexShort(sharedKey, 6, 4)}`,
-                                tone: "emerald",
-                            },
-                        ]}
-                    />
-                    <Device
-                        x={RIGHT_DEVICE_X}
-                        y={DEVICE_Y}
-                        name={partyB}
-                        tone="amber"
-                        lines={[
-                            {
-                                text: `b = ${hexShort(secretB, 6, 4)}`,
-                                tone: "amber",
-                            },
-                            { text: `B = ${hexShort(publicB, 6, 4)}` },
-                            {
-                                text: `K = ${hexShort(sharedKey, 6, 4)}`,
-                                tone: "emerald",
-                            },
-                        ]}
-                    />
-
-                    <Chip
-                        key={`a-${publicA}`}
-                        x={CENTER_X - 30}
-                        y={CHANNEL_Y - 19}
-                        text={`A = ${hexShort(publicA, 6, 4)}`}
-                        tone="rose"
-                        className="animate-in fade-in slide-in-from-left-8 duration-500"
-                    />
-                    <Chip
-                        key={`b-${publicB}`}
-                        x={CENTER_X + 30}
-                        y={CHANNEL_Y + 19}
-                        text={`B = ${hexShort(publicB, 6, 4)}`}
-                        tone="rose"
-                        className="animate-in fade-in slide-in-from-right-8 duration-500"
-                    />
-                </svg>
+                </div>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-4 text-sm">
-                <div className="flex w-full flex-col gap-4 py-2 md:flex-row">
-                    <div className="flex w-full flex-col items-center justify-center gap-3 md:w-2/3">
+            <CardFooter className="flex-col items-stretch gap-3 text-sm">
+                <StagePanel
+                    step={step}
+                    title={titles[step]}
+                    onStepChange={setStep}
+                    onReplay={() => setReplays((n) => n + 1)}
+                >
+                    {descriptions[step]}
+                </StagePanel>
+                {step === 1 && (
+                    <div className="flex w-full flex-col items-center gap-2">
                         <Button
                             variant="outline"
                             size="sm"
@@ -220,31 +178,20 @@ export function RealisticDiffieHellman({
                         </Button>
                         <span className="text-muted-foreground text-center font-mono text-xs">
                             p: {pDigits} digits · secrets: ~{secretDigits}{" "}
-                            digits · K: {keyDigits} digits
+                            digits
                         </span>
                     </div>
-                    <div className="flex w-full flex-col items-center justify-center gap-1 text-center md:w-1/3">
-                        <span className="text-muted-foreground text-xs">
-                            shared key K
-                        </span>
-                        <span
-                            className={`font-mono text-lg font-bold ${HTML_TEXT_TONE.emerald}`}
-                        >
-                            {hexShort(sharedKey)}
-                        </span>
-                        <span className="text-muted-foreground text-xs">
-                            same on both devices
-                        </span>
-                    </div>
-                </div>
-                <details className="w-full">
-                    <summary className="text-muted-foreground cursor-pointer text-xs">
-                        full shared key
-                    </summary>
-                    <div className="text-muted-foreground mt-2 font-mono text-xs break-all">
-                        0x{sharedKey.toString(16)}
-                    </div>
-                </details>
+                )}
+                {step === 3 && (
+                    <details className="w-full">
+                        <summary className="text-muted-foreground cursor-pointer text-xs">
+                            full shared key ({keyDigits} digits)
+                        </summary>
+                        <div className="text-muted-foreground mt-2 font-mono text-xs break-all">
+                            0x{sharedKey.toString(16)}
+                        </div>
+                    </details>
+                )}
             </CardFooter>
         </Card>
     )
